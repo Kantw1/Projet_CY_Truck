@@ -1,7 +1,4 @@
-clean :
-	rm ./test
-build :
-	gcc test.c -o test
-	
-run  :
-	./test
+Droit :
+	chmod 777 Script.sh
+run :
+	./Script.sh
