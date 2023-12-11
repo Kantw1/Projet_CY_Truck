@@ -18,6 +18,7 @@ else
     echo "Erreur : L'exécutable $executable n'existe pas."
     cd Progc
     make build
+    cd ..
 fi
 #vérifier si le dossier Temp existe
 if [ ! -d "Temp" ]; then
