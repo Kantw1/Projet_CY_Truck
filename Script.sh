@@ -26,7 +26,7 @@ if [ ! -d "Temp" ]; then
 else
     rm -f Temp/*  #Supprimer tous les fichiers dans le dossier Temp si il existe
 fi
-#vérifier si le dossier Temp existe
+#vérifier si le dossier Image existe
 if [ ! -d "Image" ]; then
     echo "creation du dossier image"
     mkdir "Image"
