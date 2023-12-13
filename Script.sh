@@ -54,3 +54,4 @@ elapsed_time=$((end_time - start_time))
 
 echo "Le traitement a pris $elapsed_time secondes."
 #test
+# IL reste ca : le programme GnuPlot et choisir le traitement
