@@ -2,7 +2,7 @@
 
 #chmod 777 Script.sh
 
-fichier1="$Data/data.csv"
+fichier1="Data/data.csv"
 
 # Vérifier l'existence du fichier
 if [ ! -f "$fichier1" ]; then
@@ -28,6 +28,7 @@ else
 fi
 #vérifier si le dossier Temp existe
 if [ ! -d "Image" ]; then
+    echo "creation du dossier image"
     mkdir "Image"
 fi
 #test
