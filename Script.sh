@@ -42,4 +42,15 @@ if [ "$1" == "-h" ]; then
     afficher_aide
     exit 0
 fi
+# Mesurer le temps de début
+start_time=$(date +%s)
+
+# Exécuter le programme avec les arguments appropriés
+"$executable" "$@"
+
+# Mesurer le temps de fin
+end_time=$(date +%s)
+elapsed_time=$((end_time - start_time))
+
+echo "Le traitement a pris $elapsed_time secondes."
 #test
