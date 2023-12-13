@@ -4,6 +4,12 @@
 
 fichier1="Data/data.csv"
 
+# Fonction pour afficher l'aide
+afficher_aide() {
+    echo "  -h, : En lancant ce programme vous avez le choix entre différents arguments 
+    liés à différents traitements"
+}
+
 # Vérifier l'existence du fichier
 if [ ! -f "$fichier1" ]; then
     echo "Erreur : Le fichier $fichier1 n'existe pas."
@@ -30,5 +36,10 @@ fi
 if [ ! -d "Image" ]; then
     echo "creation du dossier image"
     mkdir "Image"
+fi
+# Vérifier si l'argument -h est présent
+if [ "$1" == "-h" ]; then
+    afficher_aide
+    exit 0
 fi
 #test
