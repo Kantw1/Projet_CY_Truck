@@ -1,6 +1,6 @@
 fichier_trajets="Data/data.csv"
-fichier_resultats="Temp/resultat.txt"
-fichier_fusionne="Temp/fusion.txt"
+fichier_resultats="Temp/resultat 2.txt"
+fichier_fusionne="Temp/fusion 2.txt"
 
 #cat "$fichier_trajets" | cut -d';' -f6 | sort | uniq -c | sort -nr | head -n 10 | sort -k1,1n > $fichier_resultats
 
