@@ -2,7 +2,7 @@ fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat 2.txt"
 fichier_fusionne="Temp/fusion 2.txt"
 
-#awk -F';' '{ distances[$6] += $3 } END { for (cond in distances) print cond, distances[cond] }' "$fichier_trajets" | sort -k2,2nr | head -n 10 | sort -k1,1n > "$fichier_resultats"
+awk -F';' '{ distances[$6] += $3 } END { for (cond in distances) print cond, distances[cond] }' "$fichier_trajets" | sort -k2,2nr | head -n 10 | sort -k1,1n > "$fichier_resultats"
 
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 800, 400
