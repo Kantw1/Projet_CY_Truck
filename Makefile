@@ -3,7 +3,7 @@ Droit :
 run D1:
 	./Script.sh D1
 
-run D2:
+run D2: 
 	./Script.sh D2
 
 run T:
