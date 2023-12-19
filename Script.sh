@@ -35,18 +35,21 @@ traitement_D2() {
 traitement_L() {
     echo "Traitement L"
     # Ajoutez les commandes spécifiques pour le traitement L
+    ./Traitement/L.sh
 }
 
 # Fonction pour le traitement T
 traitement_T() {
     echo "Traitement T"
     # Ajoutez les commandes spécifiques pour le traitement T
+    ./Traitement/T.sh
 }
 
 # Fonction pour le traitement S
 traitement_S() {
     echo "Traitement S"
     # Ajoutez les commandes spécifiques pour le traitement S
+    ./Traitement/S.sh
 }
 
 # Vérifier l'existence du fichier
