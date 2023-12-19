@@ -2,7 +2,7 @@ fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat 2.txt"
 fichier_fusionne="Temp/fusion 2.txt"
 
-#cat "$fichier_trajets" | cut -d';' -f6 | sort | uniq -c | sort -nr | head -n 10 | sort -k1,1n > $fichier_resultats
+#awk -F';' '{ distances[$6] += $3 } END { for (cond in distances) print cond, distances[cond] }' "$fichier_trajets" | sort -k2,2nr | head -n 10 | sort -k1,1n > "$fichier_resultats"
 
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 800, 400
@@ -16,4 +16,4 @@ set ytics nomirror
 set yrange [0:10]
 
 plot '$fichier_resultats' using (\$1*0.5):0:(\$1*0.5):(0.3):yticlabels(3) with boxxyerrorbars lc rgbcolor 'blue' ti "Histogramme Horizontal2"
-EOF
+EOF                   
