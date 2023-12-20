@@ -1,7 +1,7 @@
-#Si fonctionne pas, penser à dos2unix Traitement/D2.sh
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat_2.txt"
-awk -F ';' '{ distances[$6] += $5 } END { for (driver in distances) print distances[driver],driver }' $fichier_trajets | sort -k2,2nr | head -n 10 | sort -k1,1n > $fichier_resultats
+
+awk -F ';' '{ distances[$6] += $5 } END { for (driver in distances) print distances[driver],driver }' $fichier_trajets | sort -k2,2nr | head -n 11 | tail -n 10 | sort -k1,1n > $fichier_resultats
 
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 800, 400
