@@ -1,10 +1,14 @@
+#création des fichiers nécessaires
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat.txt"
 fichier_fusionne="Temp/fusion.txt"
 
+#calcul du nombre de trajets de chaque conducteur
 awk -F ';' '!seen[$6,$1]++ { conducteurs[$6]++} END { for (diver in conducteurs) print conducteurs[diver], diver}' $fichier_trajets |sort -k1,1nr | head -n 10 | sort -k1,1n > $fichier_resultats
 #cat "$fichier_trajets" | cut -d';' -f6 | sort | uniq -c | sort -nr | head -n 10 | sort -k1,1n > $fichier_resultats bon ça fonctionne pas trop quoi
 #test!!! !
+
+# utilisation de gnuplot
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 800, 400
 set output 'Image/histogramme_horizontal.png'
