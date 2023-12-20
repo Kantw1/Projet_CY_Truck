@@ -2,7 +2,7 @@
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat_2.txt"
 
-#calcul des 10 plu grandes distance totale
+#calcul des 10 plus grandes distance totale
 awk -F ';' '{ distances[$6] += $5 } END { for (driver in distances) print distances[driver],driver }' $fichier_trajets | sort -k2,2nr | head -n 11 | tail -n 10 | sort -k1,1n > $fichier_resultats
 
 #utilisation de gnuplot
