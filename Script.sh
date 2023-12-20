@@ -20,39 +20,46 @@ afficher_aide() {
 # Fonction pour le traitement D1
 traitement_D1() {
     echo "Traitement D1"
-    # Ajoutez les commandes spécifiques pour le traitement D1
+    #lancer les verif et le traitement demandé
+    verifier_tout;;
     ./Traitement/D1.sh
 }
 
 # Fonction pour le traitement D2
 traitement_D2() {
     echo "Traitement D2"
-    # Ajoutez les commandes spécifiques pour le traitement D2
+    # lancer les verif et le traitement demandé
+    verifier_tout;;
     ./Traitement/D2.sh
 }
 
 # Fonction pour le traitement L
 traitement_L() {
     echo "Traitement L"
-    # Ajoutez les commandes spécifiques pour le traitement L
+    # lancer les verif et le traitement demandé
+    verifier_tout;;
     ./Traitement/L.sh
 }
 
 # Fonction pour le traitement T
 traitement_T() {
     echo "Traitement T"
-    # Ajoutez les commandes spécifiques pour le traitement T
+    # lancer les verif et le traitement demandé
+    verifier_tout;;
     ./Traitement/T.sh
 }
 
 # Fonction pour le traitement S
 traitement_S() {
     echo "Traitement S"
-    # Ajoutez les commandes spécifiques pour le traitement S
+    # lancer les verif et le traitement demandé
+    verifier_tout;;
     ./Traitement/S.sh
 }
 
+
 # Vérifier l'existence du fichier
+verifier_tout() {
 if [ ! -f "$fichier1" ]; then
     echo "Erreur : Le fichier $fichier1 n'existe pas."
 fi
@@ -87,6 +94,8 @@ if [ ! -d "Image" ]; then
     echo "creation du dossier image"
     mkdir "Image"
 fi
+
+}
 
 # Mesurer le temps de début
 start_time=$(date +%s)
