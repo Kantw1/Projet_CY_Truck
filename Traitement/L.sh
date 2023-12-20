@@ -1,12 +1,12 @@
 fichier_trajets="Data/data.csv"
-fichier_resultats="Temp/resultat.txt"
-fichier_fusionne="Temp/fusion.txt"
+fichier_resultats="Temp/resultat.txt_3"
+fichier_fusionne="Temp/fusion.txt_3"
 
 cat "$fichier_trajets" | cut -d';' -f1,5 | sort | awk -F ';' 'NR>1 { sum[$1]+=$2 } END { for (RouteID in sum) print RouteID " " sum[RouteID] }' | sort -nr | head -n 10 | sort -k2,1n > "$fichier_resultats"
 
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 800, 400
-set output 'Image/histogramme_horizontal.png'
+set output 'Image/histogramme_horizontal_3.png'
 set title 'Histogramme horizontal des données'
 set xlabel 'Distance du trajet'
 set ylabel 'ID Trajet'
