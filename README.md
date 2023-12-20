@@ -3,9 +3,6 @@
 # Projet Collaboratif
 
 # a faire :
-## Mattéo : script.sh de base ( quand on lance spécifiquement un programe depuis le Makefil ça ne fait pas les vérif donc ça peut coser des PB; D2.sh
-### On pourrait alors créer un script sh vérif où l'on met toutes les vérifs et on l'appel a chaque traitement
-## Quentin : D1.sh problème des nom prénoms à afficher à régler
-
-
-# demander au prof si on considère que gnuplot est déjà sur chaque pc
+## Mattéo : d2 et script
+## Quentin : D1.sh problème des nom prénoms à afficher à régler et T ou S
+##Baptiste : L et T ou S
