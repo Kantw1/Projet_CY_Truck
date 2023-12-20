@@ -21,7 +21,7 @@ afficher_aide() {
 traitement_D1() {
     echo "Traitement D1"
     #lancer les verif et le traitement demandé
-    verifier_tout;;
+    verifier_tout;
     ./Traitement/D1.sh
 }
 
@@ -29,7 +29,7 @@ traitement_D1() {
 traitement_D2() {
     echo "Traitement D2"
     # lancer les verif et le traitement demandé
-    verifier_tout;;
+    verifier_tout;
     ./Traitement/D2.sh
 }
 
@@ -37,7 +37,7 @@ traitement_D2() {
 traitement_L() {
     echo "Traitement L"
     # lancer les verif et le traitement demandé
-    verifier_tout;;
+    verifier_tout;
     ./Traitement/L.sh
 }
 
@@ -45,7 +45,7 @@ traitement_L() {
 traitement_T() {
     echo "Traitement T"
     # lancer les verif et le traitement demandé
-    verifier_tout;;
+    verifier_tout;
     ./Traitement/T.sh
 }
 
@@ -53,7 +53,7 @@ traitement_T() {
 traitement_S() {
     echo "Traitement S"
     # lancer les verif et le traitement demandé
-    verifier_tout;;
+    verifier_tout;
     ./Traitement/S.sh
 }
 
