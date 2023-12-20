@@ -1,7 +1,6 @@
 #création des fichiers nécessaires
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat.txt"
-fichier_fusionne="Temp/fusion.txt"
 
 #calcul du nombre de trajets de chaque conducteur
 awk -F ';' '!seen[$6,$1]++ { conducteurs[$6]++} END { for (diver in conducteurs) print conducteurs[diver], diver}' $fichier_trajets |sort -k1,1nr | head -n 10 | sort -k1,1n > $fichier_resultats
