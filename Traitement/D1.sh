@@ -4,20 +4,18 @@ fichier_resultats="Temp/resultat.txt"
 
 #calcul du nombre de trajets de chaque conducteur
 awk -F ';' '!seen[$6,$1]++ { conducteurs[$6]++} END { for (diver in conducteurs) print conducteurs[diver], diver}' $fichier_trajets |sort -k1,1nr | head -n 10 | sort -k1,1n > $fichier_resultats
-#cat "$fichier_trajets" | cut -d';' -f6 | sort | uniq -c | sort -nr | head -n 10 | sort -k1,1n > $fichier_resultats bon ça fonctionne pas trop quoi
-#test!!! !
 
 # utilisation de gnuplot
 gnuplot -persist <<EOF
-set terminal pngcairo enhanced font 'arial,10' size 800, 400
+set terminal pngcairo enhanced font 'arial,10' size 700, 600
 set output 'Image/histogramme_horizontal.png'
-set title 'Histogramme horizontal des données'
-set xlabel 'Nombre de trajets'
-set ylabel 'Conducteurs'
+set title 'Option -d1 : Nbroutes = f(Driver)'
+set xlabel 'NB ROUTES'
+set ylabel 'DRIVER NAMES'
 set style fill solid
-set xtics nomirror
-set ytics nomirror
-set yrange [0:10]
+#set xtics nomirror #je crois qu'il y a pas besoin de nomirror
+#set ytics nomirror
+set yrange [-1:10]
 
-plot '$fichier_resultats' using (\$1*0.5):0:(\$1*0.5):(0.3):yticlabels(3) with boxxyerrorbars lc rgbcolor 'blue' ti "Histogramme Horizontal"
+plot '$fichier_resultats' using (\$1*0.5):0:(\$1*0.5):(0.4):yticlabels(sprintf("%s %s", stringcolumn(2), stringcolumn(3))) with boxxyerrorbars lc rgbcolor 'spring-green' notitle
 EOF
