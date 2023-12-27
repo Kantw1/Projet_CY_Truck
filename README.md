@@ -4,5 +4,5 @@
 
 # a faire :
 ## Mattéo : d2 et script
-## Quentin : D1.sh problème des nom prénoms à afficher à régler et T ou S
+## Quentin : POur le traitement L, il faudrait un variable pour le yrange parce que si les données deviennent supérieure à 3000 et bah c chiant
 ##Baptiste : L et T ou S
