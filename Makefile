@@ -1,5 +1,8 @@
 Droit :
 	chmod 777 Script.sh
+	chmod 777 Image/histogramme_horizontal.png
+	chmod 777 Image/histogramme_horizontal_2.png
+	chmod 777 Image/histogramme_horizontal_3.png
 run D1:
 	./Script.sh D1
 
