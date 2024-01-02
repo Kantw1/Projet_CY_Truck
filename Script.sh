@@ -1,7 +1,7 @@
 #script schell
 
 chmod 777 Script.sh
-chmod 777 Traitement/D1.sh Traitement/D2.sh Traitement/T.sh Traitement/L.sh Traitement/S.sh 
+chmod 777 Traitement/D1.sh Traitement/D2.sh Traitement/T.sh Traitement/L.c Traitement/S.c 
 
 fichier1="Data/data.csv"
 
@@ -46,7 +46,7 @@ traitement_T() {
     echo "Traitement T"
     # lancer les verif et le traitement demandé
     verifier_tout;
-    ./Traitement/T.sh
+    ./Traitement/T.c
 }
 
 # Fonction pour le traitement S
@@ -54,7 +54,7 @@ traitement_S() {
     echo "Traitement S"
     # lancer les verif et le traitement demandé
     verifier_tout;
-    ./Traitement/S.sh
+    ./Traitement/S.c
 }
 
 
