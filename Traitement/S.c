@@ -19,7 +19,7 @@ typedef struct Trajet{
 // fonction pour calculer hauteur d'un arbre
 int height(EtapeAVL *node) {
     if (node == NULL) {
-        return 0; // La hauteur d'un nœud vide est 0
+        return 0; // La hauteur d'un noeud vide est 0
     } else {
         int gauche_height = height(node->gauche);
         int droite_height = height(node->droite);
@@ -28,11 +28,11 @@ int height(EtapeAVL *node) {
     }
 }
 
-// création d'un nouveau noeud
+// creation d'un nouveau noeud
 EtapeAVL *newEtapeAVL(int id_trajet) {
     EtapeAVL *node = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     if (node == NULL) {
-        perror("Erreur d'allocation mémoire");
+        perror("Erreur d'allocation memoire");
         exit(EXIT_FAILURE);
     }
     node->id_trajet = id_trajet;
@@ -55,13 +55,13 @@ EtapeAVL *insert(EtapeAVL *root, int id_trajet) {
     } else {
         return root;
     }
-    // Mettre à jour la hauteur du nœud actuel
+    // Mettre à jour la hauteur du noeud actuel
     root->hauteur = 1 + max(height(root->gauche), height(root->droite));
 
-    // Obtenir le facteur d'équilibre du nœud
+    // Obtenir le facteur d'equilibre du noeud
     int balance = getBalance(root);
 
-    // Cas de déséquilibre à gauche
+    // Cas de desequilibre à gauche
     if (balance > 1) {
         if (id_trajet < root->gauche->id_trajet) {
             return rotateRight(root);
@@ -106,10 +106,10 @@ EtapeAVL *rotateLeft(EtapeAVL *x) {
     return y;
 }
 
-// l'AVL est-il équilibré
+// l'AVL est-il equilibre
 int getBalance(EtapeAVL *node) {
     if (node == NULL) {
-        return 0; // Le facteur d'équilibre d'un nœud vide est 0
+        return 0; // Le facteur d'equilibre d'un noeud vide est 0
     } else {
         return height(node->gauche) - height(node->droite);
     }
@@ -124,11 +124,38 @@ int main(int argc, char *argv[]) {
     char option = argv[1][0];
     char *fichier_csv = argv[2];
 
-    if (option == 't') {
+    if (option == 's') {
         FILE *fichier = fopen(fichier_csv, "r");
         if (fichier == NULL) {
             fprintf(stderr, "Erreur d'ouverture du fichier.\n");
             return 1;
         }
+    int id_trajet, distance_min, distance_max, distance_totale;
+    EtapeAVL *arbre = NULL;
 
+    //  Utilisation de malloc pour allouer de l'espace pour une etape
+    EtapeAVL = (EtapeAVL *)malloc(sizeof(EtapeAVL));
+
+     while (fscanf(fichier, "%d,%d,%d,%d", &id_trajet, &distance_min, &distance_max, &distance_totale) == 4) {
+            // Utilisation de malloc pour allouer de l'espace pour un nouveau noeud
+            EtapeAVL *nouvelle_etape = (EtapeAVL *)malloc(sizeof(EtapeAVL));
+            if (nouvelle_etape == NULL) {
+                perror("Erreur d'allocation memoire");
+                exit(EXIT_FAILURE);
+            }
+
+            // Initialisation du nouveau noeud avec les donnees lues depuis le fichier
+            nouvelle_etape->id_trajet = id_trajet;
+            nouvelle_etape->hauteur = 1;  // Nouveau noeud, hauteur initiale est 1
+            nouvelle_etape->gauche = NULL;
+            nouvelle_etape->droite = NULL;
+
+            // Insertion de la nouvelle etape dans l'arbre AVL
+            arbre = insert(arbre, nouvelle_etape);
+
+            // Liberation de l'espace memoire utilise par la structure temporaire
+            free(nouvelle_etape);
+        }
+
+        fclose(fichier);
     
