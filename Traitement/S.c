@@ -3,18 +3,13 @@
 
 typedef struct EtapeAVL {
     int id_trajet;
+    int distance_min;
+    int distance_max;
+    int distance_totale;
     int hauteur;
     struct EtapeAVL *gauche;
     struct EtapeAVL *droite;
 } EtapeAVL;
-
-typedef struct Trajet{
-    int id_trajet;
-    int distance_min;
-    int distance_max;
-    int distance_totale;
-    struct Trajet *next;
-}
 
 // fonction pour calculer hauteur d'un arbre
 int height(EtapeAVL *node) {
@@ -138,23 +133,13 @@ int main(int argc, char *argv[]) {
 
      while (fscanf(fichier, "%d,%d,%d,%d", &id_trajet, &distance_min, &distance_max, &distance_totale) == 4) {
             // Utilisation de malloc pour allouer de l'espace pour un nouveau noeud
-            EtapeAVL *nouvelle_etape = (EtapeAVL *)malloc(sizeof(EtapeAVL));
-            if (nouvelle_etape == NULL) {
-                perror("Erreur d'allocation memoire");
-                exit(EXIT_FAILURE);
-            }
-
-            // Initialisation du nouveau noeud avec les donnees lues depuis le fichier
-            nouvelle_etape->id_trajet = id_trajet;
-            nouvelle_etape->hauteur = 1;  // Nouveau noeud, hauteur initiale est 1
-            nouvelle_etape->gauche = NULL;
-            nouvelle_etape->droite = NULL;
+            EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet);
+            nouvelle_etape->distance_min = distance_min;
+            nouvelle_etape->distance_max = distance_max;
+            nouvelle_etape->distance_totale = distance_totale;
 
             // Insertion de la nouvelle etape dans l'arbre AVL
             arbre = insert(arbre, nouvelle_etape);
-
-            // Liberation de l'espace memoire utilise par la structure temporaire
-            free(nouvelle_etape);
         }
 
         fclose(fichier);
