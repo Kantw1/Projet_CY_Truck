@@ -156,7 +156,7 @@ void processStats(struct Trajet* root) {
     fillSortedData(root);
 
     // Afficher les statistiques et générer les données pour le graphique
-    FILE* dataFile = fopen("graph_data.txt", "w");
+    FILE* dataFile = fopen("Temp/Resultat_s.txt", "w");
     fprintf(dataFile, "#ID Distance_mini Distance_moyenne Distance_maxi\n");
     for (int i = 0; i < currentIndex; ++i) {
         fprintf(dataFile, "%s %.2lf %.2lf %.2lf\n", sortedData[i]->id, sortedData[i]->distance_mini, sortedData[i]->distance_moyenne, sortedData[i]->distance_maxi);
