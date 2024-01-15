@@ -15,11 +15,11 @@ set ylabel "Distances (km)"
 set style data lines
 
 # Tracer les courbes
-plot "graph_data.txt" using 1:2 with lines title "Distance_mini", \
-     "graph_data.txt" using 1:3 with lines title "Distance_moyenne", \
-     "graph_data.txt" using 1:4 with lines title "Distance_maxi"
+plot "Temp/Resultat_s.txt" using 1:2 with lines title "Distance_mini", \
+     "Temp/Resultat_s.txt" using 1:3 with lines title "Distance_moyenne", \
+     "Temp/Resultat_s.txt" using 1:4 with lines title "Distance_maxi"
 
 EOF
 
 # Message indiquant que le script a terminé
-echo "Graphique généré avec succès. Nom du fichier : graph.png"
+echo "Graphique généré avec succès. Nom du fichier : histogramme_S.png"
