@@ -6,7 +6,7 @@
 # Commandes Gnuplot
 gnuplot << EOF
 set terminal pngcairo enhanced font 'Arial,12' size 800,600
-set output "graph.png"
+set output "Image/histogramme_S.png"
 
 # Configuration du graphique
 set title "Graphique Min-Max-Moyenne"
