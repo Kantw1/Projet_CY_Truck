@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Structure AVL pour les villes
 typedef struct AVLville {
@@ -191,15 +192,15 @@ int nombre_chainon(Ville *pliste) {
 }
 
 // Fonction pour compter le nombre de nœuds départ dans un AVL
-int compterDépart(AVLville *racine) {
+int compterDepart(AVLville *racine) {
     int v = 0;
     if (racine != NULL && racine->d == 1) {
         v++;
-        v += compterDépart(racine->gauche);
-        v += compterDépart(racine->droite);
+        v += compterDepart(racine->gauche);
+        v += compterDepart(racine->droite);
     } else {
-        v += compterDépart(racine->gauche);
-        v += compterDépart(racine->droite);
+        v += compterDepart(racine->gauche);
+        v += compterDepart(racine->droite);
     }
     return v;
 }
@@ -287,7 +288,7 @@ int main(int argc, char *argv[]) {
         while (pliste != NULL) {
             Ville *tmp = pliste;
             k = compterNoeuds(tmp->ville);
-            l = compterDépart(tmp->ville);
+            l = compterDepart(tmp->ville);
             l1 = insert_stat(l1, tmp->nom, k, l);
             tmp = tmp->next;
         }

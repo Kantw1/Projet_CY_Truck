@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct EtapeAVL {
     int id_trajet;
@@ -141,6 +142,7 @@ int main(int argc, char *argv[]) {
             // Insertion de la nouvelle etape dans l'arbre AVL
             arbre = insert(arbre, nouvelle_etape);
         }
-
-        fclose(fichier);
-    
+    fclose(fichier);
+    }
+    return 0;
+}
