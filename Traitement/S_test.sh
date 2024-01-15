@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Commande pour trier les données en utilisant le programme C
-./avl_sort
+./traitement_s
 
 # Commandes Gnuplot
 gnuplot << EOF
