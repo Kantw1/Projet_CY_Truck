@@ -5,7 +5,7 @@
 
 // Structure pour les données de trajet
 struct Trajet {
-    char id[50];
+    int id;
     double distance_mini;
     double distance_maxi;
     double distance_moyenne;
@@ -28,9 +28,9 @@ int height(struct Trajet* N) {
 }
 
 // Fonction pour créer un nouveau nœud
-struct Trajet* newNode(char id[], double distance_mini, double distance_maxi, double distance_moyenne) {
+struct Trajet* newNode(int id, double distance_mini, double distance_maxi, double distance_moyenne) {
     struct Trajet* node = (struct Trajet*)malloc(sizeof(struct Trajet));
-    strcpy(node->id, id);
+    node->id=id;
     node->distance_mini = distance_mini;
     node->distance_maxi = distance_maxi;
     node->distance_moyenne = distance_moyenne;
@@ -82,16 +82,15 @@ int getBalance(struct Trajet* N) {
     return height(N->left) - height(N->right);
 }
 
-// Insérer un nouveau nœud dans l'arbre AVL
-struct Trajet* insert(struct Trajet* node, char id[], double distance_mini, double distance_maxi, double distance_moyenne) {
+struct Trajet* insert(struct Trajet* node, int id, double distance_mini, double distance_maxi, double distance_moyenne) {
     // Effectuer l'insertion normale de l'arbre binaire de recherche
     if (node == NULL) {
         return newNode(id, distance_mini, distance_maxi, distance_moyenne);
     }
 
-    if (strcmp(id, node->id) < 0) {
+    if (id > node->id) {
         node->left = insert(node->left, id, distance_mini, distance_maxi, distance_moyenne);
-    } else if (strcmp(id, node->id) > 0) {
+    } else if (id < node->id) {
         node->right = insert(node->right, id, distance_mini, distance_maxi, distance_moyenne);
     } else {
         // Ignorer les entrées en double
@@ -106,9 +105,9 @@ struct Trajet* insert(struct Trajet* node, char id[], double distance_mini, doub
 
     // Cas de déséquilibre à gauche
     if (balance > 1) {
-        if (strcmp(id, node->left->id) < 0) {
+        if (id < node->left->id) {
             return rightRotate(node);
-        } else if (strcmp(id, node->left->id) > 0) {
+        } else if (id > node->left->id) {
             node->left = leftRotate(node->left);
             return rightRotate(node);
         }
@@ -116,9 +115,9 @@ struct Trajet* insert(struct Trajet* node, char id[], double distance_mini, doub
 
     // Cas de déséquilibre à droite
     if (balance < -1) {
-        if (strcmp(id, node->right->id) > 0) {
+        if (id > node->right->id) {
             return leftRotate(node);
-        } else if (strcmp(id, node->right->id) < 0) {
+        } else if (id < node->right->id) {
             node->right = rightRotate(node->right);
             return leftRotate(node);
         }
@@ -167,7 +166,7 @@ void processStats(struct Trajet* root) {
 
 int main() {
     struct Trajet* root = NULL;
-    char id[50];
+    int id;
     double distance_mini, distance_maxi, distance_moyenne;
 
     // Lire les données depuis l'entrée standard
