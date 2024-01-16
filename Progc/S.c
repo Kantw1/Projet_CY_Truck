@@ -6,11 +6,21 @@ typedef struct EtapeAVL {
     int id_trajet;
     int distance_min;
     int distance_max;
-    int distance_totale;
+    int distance_max_min;
     int hauteur;
     struct EtapeAVL *gauche;
     struct EtapeAVL *droite;
 } EtapeAVL;
+
+typedef struct Trajet {
+ 	EtapeAVL* noeud;
+ 	struct* Trajet next;
+} Trajet;
+
+// fonction usuelle pour avoir le max entre deux données
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
 
 // fonction pour calculer hauteur d'un arbre
 int height(EtapeAVL *node) {
@@ -25,12 +35,16 @@ int height(EtapeAVL *node) {
 }
 
 // creation d'un nouveau noeud
-EtapeAVL *newEtapeAVL(int id_trajet) {
+EtapeAVL *newEtapeAVL(int id_trajet,int distance) {
     EtapeAVL *node = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     if (node == NULL) {
         perror("Erreur d'allocation memoire");
         exit(EXIT_FAILURE);
     }
+    node->distance=distance;
+    node->distance_max=distance;
+    node->distance_min=distance;
+    node->distance_max_min=0;
     node->id_trajet = id_trajet;
     node->gauche = NULL;
     node->droite = NULL;
@@ -38,17 +52,35 @@ EtapeAVL *newEtapeAVL(int id_trajet) {
     return node;
 }
 
+// modification du noeud 
+EtapeAVL *modifierTrajet(EtapeAVL* root,EtapeAVL* nouvelle_etape){
+	root->distance+=nouvelle_etape->distance
+	if (root->distance_max<nouvelle_etape->distance){
+		root->distance_max=nouvelle_etape->distance;
+	}
+	if (root->distance_min>nouvelle_etape->distance){
+		root->distance_min=distance;
+	}
+	root->distance_max_min=root->distance_max-root->distance_min;
+	return root;
+}
+
+Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
+	if (pliste->noeud->id_trajet==nouvelle_etape->id_trajet){
+		pliste->noeud=modifierTrajet(Trajet->noeud,nouvelle_etape);
 // insertion d'un nouveau noeud
-EtapeAVL *insert(EtapeAVL *root, int id_trajet) {
+EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
-        return newEtapeAVL(id_trajet, a);
+        root=nouvelle_etape;
+        return root;
     }
-    if (id_trajet < root->id_trajet) {
-        root->gauche = insert(root->gauche, id_trajet, a);
-    } else if (id_trajet > root->id_trajet) {
-        root->droite = insert(root->droite, id_trajet, a);
+    if (root->distance_max_min>nouvelle_etape->distance_max_min) {
+        root->gauche = insert(root->gauche,nouvelle_etape,id_trajet,distance);
+    } else if (root->distance_max_min<nouvelle_etape->distance_max_min) {
+        root->droite = insert(root->droite,nouvelle_etape,id_trajet,distance);
     } else {
+        root = modifierTrajet(root,nouvelle_etape,id_trajet,distance);
         return root;
     }
     // Mettre à jour la hauteur du noeud actuel
@@ -59,7 +91,7 @@ EtapeAVL *insert(EtapeAVL *root, int id_trajet) {
 
     // Cas de desequilibre à gauche
     if (balance > 1) {
-        if (id_trajet < root->gauche->id_trajet) {
+        if (nouvelle_etape->distance < root->gauche->id_trajet) {
             return rotateRight(root);
         } else if (id_trajet > root->gauche->id_trajet) {
             root->gauche = rotateLeft(root->gauche);
@@ -126,22 +158,23 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Erreur d'ouverture du fichier.\n");
             return 1;
         }
-    int id_trajet, distance_min, distance_max, distance_totale;
+    int id_trajet, distance;
     EtapeAVL *arbre = NULL;
-
+    Trajet* pliste= NULL;
+    Trajet* tmp=NULL;
+    pliste->next=NULL;
+    tmp=pliste;
     //  Utilisation de malloc pour allouer de l'espace pour une etape
     EtapeAVL = (EtapeAVL *)malloc(sizeof(EtapeAVL));
-
-     while (fscanf(fichier, "%d,%d,%d,%d", &id_trajet, &distance_min, &distance_max, &distance_totale) == 4) {
-            // Utilisation de malloc pour allouer de l'espace pour un nouveau noeud
-            EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet);
-            nouvelle_etape->distance_min = distance_min;
-            nouvelle_etape->distance_max = distance_max;
-            nouvelle_etape->distance_totale = distance_totale;
-
-            // Insertion de la nouvelle etape dans l'arbre AVL
-            arbre = insert(arbre, nouvelle_etape);
-        }
+    
+    while (fscanf(fichier, "%d,%d", &id_trajet, &distance) == 2) {
+            EtapeAVL *nouvelle_etape=newEtapeAVL(id_trajet,distance);
+            insertPliste(pliste,nouvelle_etape);
+       }
+    while (tmp->next!=NULL){
+    	arbre=insertAVL(arbre,tmp->noeud);
+    }
+    
     fclose(fichier);
     }
     return 0;
