@@ -66,8 +66,17 @@ EtapeAVL *modifierTrajet(EtapeAVL* root,EtapeAVL* nouvelle_etape){
 }
 
 Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
-	if (pliste->noeud->id_trajet==nouvelle_etape->id_trajet){
-		pliste->noeud=modifierTrajet(Trajet->noeud,nouvelle_etape);
+	Trajet* tmp=pliste;
+	while (tmp->next!=NULL){
+		if (tmp->noeud->id_trajet==nouvelle_etape->id_trajet){
+			tmp->noeud=modifierTrajet(Trajet->noeud,nouvelle_etape);
+		}
+		tmp=tmp->next;
+	}
+	tmp->next->noeud=nouvelle_etape;
+	return pliste;
+}
+	
 // insertion d'un nouveau noeud
 EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
@@ -161,15 +170,13 @@ int main(int argc, char *argv[]) {
     int id_trajet, distance;
     EtapeAVL *arbre = NULL;
     Trajet* pliste= NULL;
-    Trajet* tmp=NULL;
     pliste->next=NULL;
-    tmp=pliste;
     //  Utilisation de malloc pour allouer de l'espace pour une etape
     EtapeAVL = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     
     while (fscanf(fichier, "%d,%d", &id_trajet, &distance) == 2) {
             EtapeAVL *nouvelle_etape=newEtapeAVL(id_trajet,distance);
-            insertPliste(pliste,nouvelle_etape);
+            pliste=insertPliste(pliste,nouvelle_etape);
        }
     while (tmp->next!=NULL){
     	arbre=insertAVL(arbre,tmp->noeud);
