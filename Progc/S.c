@@ -7,7 +7,9 @@ typedef struct EtapeAVL {
     int distance_min;
     int distance_max;
     int distance_max_min;
+    int distance_moyenne;
     int hauteur;
+    int nombre_etapes;
     struct EtapeAVL *gauche;
     struct EtapeAVL *droite;
     struct EtapeAVL *racine;
@@ -46,6 +48,8 @@ EtapeAVL *newEtapeAVL(int id_trajet,int distance) {
     node->distance_max=distance;
     node->distance_min=distance;
     node->distance_max_min=0;
+    node->nombre_etapes=1;
+    node->distance_moyenne=distance/nombre_etapes;
     node->id_trajet = id_trajet;
     node->gauche = NULL;
     node->droite = NULL;
@@ -63,6 +67,8 @@ EtapeAVL *modifierTrajet(EtapeAVL* root,EtapeAVL* nouvelle_etape){
 		root->distance_min=distance;
 	}
 	root->distance_max_min=root->distance_max-root->distance_min;
+        root->nombre_etapes+=1;
+        root->distance_moyenne=distance/nombre_etapes;
 	return root;
 }
 
@@ -149,7 +155,7 @@ int getBalance(EtapeAVL *node) {
     }
 }
 
-Trajet* noeud_max_parcours(EtapeAVL* arbre){
+/*/ Trajet* noeud_max_parcours(EtapeAVL* arbre){
 	Trajet* pliste;
 	if (arbre==NULL){
 	   return 0
@@ -158,6 +164,34 @@ Trajet* noeud_max_parcours(EtapeAVL* arbre){
 	pliste=insertPliste(arbre);
 	pliste=noeud_max_parcours(arbre->gauche);
 	return pliste;
+}
+/*/
+
+// Nouvelle fonction pour le traitement statistique et la génération du graphique
+void processStats(struct Trajet* root) {
+    // Tableau pour stocker les données triées
+    struct Trajet* sortedData[50];
+    int currentIndex = 0;
+
+    // Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
+    void fillSortedData(struct Trajet* node) {
+        if (node != NULL && currentIndex < 50) {
+            fillSortedData(node->right);
+            sortedData[currentIndex++] = node;
+            fillSortedData(node->left);
+        }
+    }
+
+    // Remplir le tableau trié
+    fillSortedData(root);
+
+    // Afficher les statistiques et générer les données pour le graphique
+    FILE* dataFile = fopen("Temp/Resultat_s.txt", "w");
+    fprintf(dataFile, "#ID Distance_mini Distance_moyenne Distance_maxi\n");
+    for (int i = 0; i < currentIndex; ++i) {
+        fprintf(dataFile, "%.2lf %.2lf %.2lf %.2lf %.2lf\n", sortedData[i]->id, sortedData[i]->distance_min, sortedData[i]->distance_moyenne, sortedData[i]->distance_maxi, sortedData[i]->distance_max_min);
+    }
+    fclose(dataFile);
 }
 
 int main(int argc, char *argv[]) {
@@ -190,7 +224,7 @@ int main(int argc, char *argv[]) {
     	arbre=insertAVL(arbre,tmp->noeud);
     }
     pliste=NULL;
-    noeud_max_parcours(arbre);
+    processStats(arbre);
     fclose(fichier);
     }
     return 0;
