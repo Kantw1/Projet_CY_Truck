@@ -78,11 +78,6 @@ else
     cd ..
 fi
 
-# Vérifier si l'argument -h est présent
-if [ "$1" == "-h" ]; then
-    afficher_aide
-    exit 0
-fi
 
 #vérifier si le dossier Temp existe
 if [ ! -d "Temp" ]; then
@@ -109,11 +104,9 @@ case "$1" in
     "L")  traitement_L ;;
     "T")  traitement_T ;;
     "S")  traitement_S ;;
+    "-h")  afficher_aide ;;
     *)    echo "Argument invalide. Utilisez l'option -h pour afficher l'aide." ;;
 esac
-
-# Exécuter le programme avec les arguments appropriés
-"$executable" "$@"
 
 # Mesurer le temps de fin
 end_time=$(date +%s)
