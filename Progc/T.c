@@ -12,9 +12,72 @@ typedef struct AVLville {
     struct AVLville *droite;
 } AVLville;
 
+// Structure liste des différentes villes
+typedef struct Ville {
+    char nom[50];
+    int trajet_total;
+    int departs;
+    struct Ville *next;
+} Ville;
+
+// Structure pour représenter une étape
+typedef struct {
+    int id_trajet;
+    char ville_depart[50];
+    char ville_arrivee[50];
+} Etape;
+
+// Structure pour représenter une distance d'une étape
+typedef struct {
+    int id_trajet;
+    int id_etape;
+    int distance;
+} Distance;
+
 // fonction usuelle pour avoir le max entre deux données
 int max(int a, int b) {
     return (a > b) ? a : b;
+}
+
+// rotation droite de l'AVL
+AVLville *rotateRight(AVLville *y) {
+    AVLville *x = y->gauche;
+    AVLville *T2 = x->droite;
+
+    // Rotation
+    x->droite = y;
+    y->gauche = T2;
+
+    // Mise à jour des hauteurs
+    y->hauteur = max(height(y->gauche), height(y->droite)) + 1;
+    x->hauteur = max(height(x->gauche), height(x->droite)) + 1;
+
+    return x;
+}
+
+// rotation gauche de l'AVL
+AVLville *rotateLeft(AVLville *x) {
+    AVLville *y = x->droite;
+    AVLville *T2 = y->gauche;
+
+    // Rotation
+    y->gauche = x;
+    x->droite = T2;
+
+    // Mise à jour des hauteurs
+    x->hauteur = max(height(x->gauche), height(x->droite)) + 1;
+    y->hauteur = max(height(y->gauche), height(y->droite)) + 1;
+
+    return y;
+}
+
+// l'AVL est-il équilibré
+int getBalance(AVLville *node) {
+    if (node == NULL) {
+        return 0; // Le facteur d'équilibre d'un nœud vide est 0
+    } else {
+        return height(node->gauche) - height(node->droite);
+    }
 }
 
 // fonction pour calculer hauteur d'un arbre
@@ -75,69 +138,6 @@ AVLville *insert(AVLville *root, int id_trajet, int a) {
 
     return root;
 }
-
-// rotation droite de l'AVL
-AVLville *rotateRight(AVLville *y) {
-    AVLville *x = y->gauche;
-    AVLville *T2 = x->droite;
-
-    // Rotation
-    x->droite = y;
-    y->gauche = T2;
-
-    // Mise à jour des hauteurs
-    y->hauteur = max(height(y->gauche), height(y->droite)) + 1;
-    x->hauteur = max(height(x->gauche), height(x->droite)) + 1;
-
-    return x;
-}
-
-// rotation gauche de l'AVL
-AVLville *rotateLeft(AVLville *x) {
-    AVLville *y = x->droite;
-    AVLville *T2 = y->gauche;
-
-    // Rotation
-    y->gauche = x;
-    x->droite = T2;
-
-    // Mise à jour des hauteurs
-    x->hauteur = max(height(x->gauche), height(x->droite)) + 1;
-    y->hauteur = max(height(y->gauche), height(y->droite)) + 1;
-
-    return y;
-}
-
-// l'AVL est-il équilibré
-int getBalance(AVLville *node) {
-    if (node == NULL) {
-        return 0; // Le facteur d'équilibre d'un nœud vide est 0
-    } else {
-        return height(node->gauche) - height(node->droite);
-    }
-}
-
-// Structure liste des différentes villes
-typedef struct Ville {
-    char nom[50];
-    int trajet_total;
-    int departs;
-    struct Ville *next;
-} Ville;
-
-// Structure pour représenter une étape
-typedef struct {
-    int id_trajet;
-    char ville_depart[50];
-    char ville_arrivee[50];
-} Etape;
-
-// Structure pour représenter une distance d'une étape
-typedef struct {
-    int id_trajet;
-    int id_etape;
-    int distance;
-} Distance;
 
 // Fonction pour insérer une ville dans la liste des villes
 Ville *insertionVille(Ville *pliste, char vil[50]) {
@@ -287,8 +287,8 @@ int main(int argc, char *argv[]) {
 
         while (pliste != NULL) {
             Ville *tmp = pliste;
-            k = compterNoeuds(tmp->ville);
-            l = compterDepart(tmp->ville);
+            k = compterNoeuds(tmp->next);
+            l = compterDepart(tmp->next);
             l1 = insert_stat(l1, tmp->nom, k, l);
             tmp = tmp->next;
         }
