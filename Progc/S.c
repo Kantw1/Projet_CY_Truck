@@ -10,6 +10,7 @@ typedef struct EtapeAVL {
     int hauteur;
     struct EtapeAVL *gauche;
     struct EtapeAVL *droite;
+    struct EtapeAVL *racine;
 } EtapeAVL;
 
 typedef struct Trajet {
@@ -88,10 +89,6 @@ EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
         root->gauche = insert(root->gauche,nouvelle_etape,id_trajet,distance);
     } else if (root->distance_max_min<nouvelle_etape->distance_max_min) {
         root->droite = insert(root->droite,nouvelle_etape,id_trajet,distance);
-    } else {
-        root = modifierTrajet(root,nouvelle_etape,id_trajet,distance);
-        return root;
-    }
     // Mettre à jour la hauteur du noeud actuel
     root->hauteur = 1 + max(height(root->gauche), height(root->droite));
 
@@ -152,6 +149,13 @@ int getBalance(EtapeAVL *node) {
     }
 }
 
+void noeud_max_parcours(arbre){
+	EtapeAVL* parcours=arbre;
+	while (parcours->droite!=NULL){
+		parcours=parcours->droite;
+	}
+	Trajet* max_50;
+	max_50 = remplir_tab(parcours);
 int main(int argc, char *argv[]) {
     if (argc != 3) {
         fprintf(stderr, "Usage: %s <option> <fichier.csv>\n", argv[0]);
