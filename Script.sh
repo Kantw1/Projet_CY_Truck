@@ -46,7 +46,7 @@ traitement_T() {
     echo "Traitement T"
     # lancer les verif et le traitement demandé
     verifier_tout;
-    gcc Progc/T.c -o prog_t
+    gcc Progc/T.c -o Progc/prog_t
     ./Progc/prog_t t Data/data.csv
 }
 
