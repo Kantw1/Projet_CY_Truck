@@ -1,7 +1,7 @@
 #script schell
 
 chmod 777 Script.sh
-chmod 777 Traitement/D1.sh Traitement/D2.sh Traitement/T.sh Traitement/L.c Traitement/S.c 
+chmod 777 Traitement/D1.sh Traitement/D2.sh Traitement/T.sh Progc/T.c Progc/S.c
 
 fichier1="Data/data.csv"
 
@@ -57,20 +57,22 @@ traitement_S() {
     ./Traitement/S.c
 }
 
-
-# Vérifier l'existence du fichier
+#fonction de vérification
 verifier_tout() {
+# Vérifier l'existence du fichier
 if [ ! -f "$fichier1" ]; then
     echo "Erreur : Le fichier $fichier1 n'existe pas."
 fi
 
-executable="Progc/prog"  # Remplacez "prog" par le nom de votre exécutable
+executable1="Progc/prog1"  # executable du traitement T
+executable2="Progc/prog2"  # executable du traitement S
 
 #vérifier si l'executable c existe
-if command -v "$executable" >/dev/null 2>&1; then
-    echo "L'exécutable $executable existe."
+if command -v "$executable1" >/dev/null 2>&1 && command -v "$executable2" >/dev/null 2>&1; then
+    echo "L'exécutable $executable1 existe."
+    echo "L'exécutable $executable1 existe."
 else
-    echo "Erreur : L'exécutable $executable n'existe pas."
+    echo "Erreur : Les exécutables $executable n'existe pas."
     cd Progc
     make build
     cd ..

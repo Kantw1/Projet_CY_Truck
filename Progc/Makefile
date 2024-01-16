@@ -2,9 +2,10 @@ clean :
 	rm ./prog1
 	rm ./prog2
 build :
-	gcc S.c -o prog && chmod +x prog1
-	gcc T.c -o prog && chmod +x prog2
+	gcc T.c -o prog && chmod +x prog1
+	gcc S.c -o prog && chmod +x prog2
 	
-run  :
+run T:
 	./prog1
+run S :
 	./prog2
