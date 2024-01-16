@@ -2,16 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Structure AVL pour les villes
-typedef struct AVLville {
-    int id_trajet;
-    int d;
-    int hauteur;
-    char ville[50];
-    struct AVLville *gauche;
-    struct AVLville *droite;
-} AVLville;
-
 // Structure liste des différentes villes
 typedef struct Ville {
     char nom[50];
@@ -19,6 +9,17 @@ typedef struct Ville {
     int departs;
     struct Ville *next;
 } Ville;
+
+// Structure AVL pour les villes
+typedef struct AVLville {
+    int id_trajet;
+    int d;
+    int hauteur;
+    char ville[50];
+    struct Ville *elm;
+    struct AVLville *gauche;
+    struct AVLville *droite;
+} AVLville;
 
 // Structure pour représenter une étape
 typedef struct {
@@ -262,7 +263,7 @@ int main(int argc, char *argv[]) {
 
         while (pliste != NULL) {
             AVLville *tmp = NULL;
-            tmp = pliste;
+            tmp->elm = pliste;
             k = compterNoeuds(tmp->gauche) + 1 + compterNoeuds(tmp->droite);
             l = compterDepart(tmp->gauche) + compterDepart(tmp->droite);
             l1 = insert_stat(l1, tmp->ville, k, l);
