@@ -27,16 +27,42 @@ typedef struct {
     char ville_arrivee[50];
 } Etape;
 
-// Structure pour représenter une distance d'une étape
-typedef struct {
-    int id_trajet;
-    int id_etape;
-    int distance;
-} Distance;
+// Fonction pour compter le nombre de nœuds dans un arbre AVL
+int compterNoeuds(AVLville *racine) {
+    if (racine == NULL) {
+        return 0;
+    }
+    return 1 + compterNoeuds(racine->gauche) + compterNoeuds(racine->droite);
+}
+
+// Fonction pour compter le nombre de nœuds départ dans un AVL
+int compterDepart(AVLville *racine) {
+    int v = 0;
+    if (racine != NULL && racine->d == 1) {
+        v++;
+    }
+    if (racine != NULL) {
+        v += compterDepart(racine->gauche);
+        v += compterDepart(racine->droite);
+    }
+    return v;
+}
 
 // fonction usuelle pour avoir le max entre deux données
 int max(int a, int b) {
     return (a > b) ? a : b;
+}
+
+// fonction pour calculer hauteur d'un arbre
+int height(AVLville *node) {
+    if (node == NULL) {
+        return 0; // La hauteur d'un nœud vide est 0
+    } else {
+        int gauche_height = height(node->gauche);
+        int droite_height = height(node->droite);
+
+        return 1 + max(gauche_height, droite_height);
+    }
 }
 
 // rotation droite de l'AVL
@@ -80,20 +106,8 @@ int getBalance(AVLville *node) {
     }
 }
 
-// fonction pour calculer hauteur d'un arbre
-int height(AVLville *node) {
-    if (node == NULL) {
-        return 0; // La hauteur d'un nœud vide est 0
-    } else {
-        int gauche_height = height(node->gauche);
-        int droite_height = height(node->droite);
-
-        return 1 + max(gauche_height, droite_height);
-    }
-}
-
 // création d'un nouveau noeud
-AVLville *newAVLville(int id_trajet, int a) {
+AVLville *newAVLville(int id_trajet, int a, char *ville) {
     AVLville *node = (AVLville *)malloc(sizeof(AVLville));
     if (node == NULL) {
         perror("Erreur d'allocation mémoire");
@@ -101,6 +115,7 @@ AVLville *newAVLville(int id_trajet, int a) {
     }
     node->id_trajet = id_trajet;
     node->d = a;
+    strncpy(node->ville, ville, 50);
     node->gauche = NULL;
     node->droite = NULL;
     node->hauteur = 1;
@@ -108,15 +123,15 @@ AVLville *newAVLville(int id_trajet, int a) {
 }
 
 // insertion d'un nouveau noeud
-AVLville *insert(AVLville *root, int id_trajet, int a) {
+AVLville *insert(AVLville *root, int id_trajet, int a, char *ville) {
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
-        return newAVLville(id_trajet, a);
+        return newAVLville(id_trajet, a, ville);
     }
     if (id_trajet < root->id_trajet) {
-        root->gauche = insert(root->gauche, id_trajet, a);
+        root->gauche = insert(root->gauche, id_trajet, a, ville);
     } else if (id_trajet > root->id_trajet) {
-        root->droite = insert(root->droite, id_trajet, a);
+        root->droite = insert(root->droite, id_trajet, a, ville);
     } else {
         return root;
     }
@@ -139,18 +154,6 @@ AVLville *insert(AVLville *root, int id_trajet, int a) {
     return root;
 }
 
-// Fonction pour insérer une ville dans la liste des villes
-Ville *insertionVille(Ville *pliste, char vil[50]) {
-    Ville *nouvelleVille = (Ville *)malloc(sizeof(Ville));
-    if (nouvelleVille == NULL) {
-        perror("Erreur d'allocation mémoire");
-        exit(EXIT_FAILURE);
-    }
-    strncpy(nouvelleVille->nom, vil, 50);
-    nouvelleVille->next = pliste;
-    return nouvelleVille;
-}
-
 // Fonction pour insérer dans la liste par ordre décroissant des villes les plus traversées
 Ville *insert_stat(Ville *l1, char vil[50], int k, int l) {
     Ville *tmp = NULL;
@@ -160,17 +163,12 @@ Ville *insert_stat(Ville *l1, char vil[50], int k, int l) {
         perror("Erreur d'allocation mémoire");
         exit(EXIT_FAILURE);
     };
-    strcpy(newVille->nom, vil);
+    strncpy(newVille->nom, vil, 50);
     newVille->trajet_total = k;
     newVille->departs = l;
-    if (tmp == NULL) {
-        newVille->next = NULL;
+    if (tmp == NULL || k >= tmp->trajet_total) {
+        newVille->next = tmp;
         l1 = newVille;
-        return l1;
-    }
-    if (l1 != NULL && k >= l1->trajet_total) {
-        newVille->next = l1->next;
-        l1->next = newVille;
         return l1;
     }
     while (tmp->next != NULL && tmp->next->trajet_total > k) {
@@ -181,36 +179,16 @@ Ville *insert_stat(Ville *l1, char vil[50], int k, int l) {
     return l1;
 }
 
-// Fonction pour compter le nombre de villes différents dans une liste
-int nombre_chainon(Ville *pliste) {
-    int v = 0;
-    while (pliste != NULL) {
-        v++;
-        pliste = pliste->next;
+// Fonction pour insérer une ville dans la liste des villes
+Ville *insertionVille(Ville *pliste, char vil[50]) {
+    Ville *nouvelleVille = (Ville *)malloc(sizeof(Ville));
+    if (nouvelleVille == NULL) {
+        perror("Erreur d'allocation mémoire");
+        exit(EXIT_FAILURE);
     }
-    return v;
-}
-
-// Fonction pour compter le nombre de nœuds départ dans un AVL
-int compterDepart(AVLville *racine) {
-    int v = 0;
-    if (racine != NULL && racine->d == 1) {
-        v++;
-        v += compterDepart(racine->gauche);
-        v += compterDepart(racine->droite);
-    } else {
-        v += compterDepart(racine->gauche);
-        v += compterDepart(racine->droite);
-    }
-    return v;
-}
-
-// Fonction pour compter le nombre de nœuds dans un arbre AVL
-int compterNoeuds(AVLville *racine) {
-    if (racine == NULL) {
-        return 0;
-    }
-    return 1 + compterNoeuds(racine->gauche) + compterNoeuds(racine->droite);
+    strncpy(nouvelleVille->nom, vil, 50);
+    nouvelleVille->next = pliste;
+    return nouvelleVille;
 }
 
 // Fonction pour désallouer la liste des villes
@@ -246,7 +224,7 @@ int main(int argc, char *argv[]) {
         Etape *p1 = NULL;
         int nombre_etapes = 0;
 
-        //  Utilisation de malloc pour allouer de l'espace pour une étape
+        // Utilisation de malloc pour allouer de l'espace pour une étape
         p1 = (Etape *)malloc(sizeof(Etape));
 
         while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[nombre_etapes].ville_depart, p1[nombre_etapes].ville_arrivee) != EOF) {
@@ -271,14 +249,11 @@ int main(int argc, char *argv[]) {
             AVLville *racine_arrivee = NULL;
 
             // Utilisation de strncpy pour copier les noms des villes
-            strncpy(racine_depart->ville, p1[i].ville_depart, 50);
-            strncpy(racine_arrivee->ville, p1[i].ville_arrivee, 50);
+            racine_depart = insert(racine_depart, p1[i].id_trajet, a, p1[i].ville_depart);
+            racine_arrivee = insert(racine_arrivee, p1[i].id_trajet, b, p1[i].ville_arrivee);
 
-            racine_depart = insert(racine_depart, p1[i].id_trajet, a);
-            racine_arrivee = insert(racine_arrivee, p1[i].id_trajet, b);
-
-            pliste = insertionVille(pliste, racine_depart->ville);
-            pliste = insertionVille(pliste, racine_arrivee->ville);
+            pliste = insertionVille(pliste, p1[i].ville_depart);
+            pliste = insertionVille(pliste, p1[i].ville_arrivee);
         }
 
         Ville *l1 = NULL;
@@ -286,25 +261,26 @@ int main(int argc, char *argv[]) {
         int l = 0;
 
         while (pliste != NULL) {
-            Ville *tmp = pliste;
-            k = compterNoeuds(tmp->next);
-            l = compterDepart(tmp->next);
-            l1 = insert_stat(l1, tmp->nom, k, l);
-            tmp = tmp->next;
+            AVLville *tmp = NULL;
+            tmp = pliste;
+            k = compterNoeuds(tmp->gauche) + 1 + compterNoeuds(tmp->droite);
+            l = compterDepart(tmp->gauche) + compterDepart(tmp->droite);
+            l1 = insert_stat(l1, tmp->ville, k, l);
+            pliste = pliste->next;
         }
 
         Ville Top10[10];
         Ville *tmp1 = l1;
 
         for (int j = 0; j < 10 && tmp1 != NULL; j++) {
-            strcpy(Top10[j].nom, tmp1->nom);
+            strncpy(Top10[j].nom, tmp1->nom, 50);
             Top10[j].departs = tmp1->departs;
             Top10[j].trajet_total = tmp1->trajet_total;
             tmp1 = tmp1->next;
         }
 
         for (int i = 0; i < 10; i++) {
-            printf("nom de la ville : %s nombre de trajets : %d nombre de fois départ : %d\n", Top10[i].nom, Top10[i].trajet_total, Top10[i].departs);
+            printf("Nom de la ville : %s Nombre de trajets : %d Nombre de fois départ : %d\n", Top10[i].nom, Top10[i].trajet_total, Top10[i].departs);
         }
 
         // Désallocation des ressources
