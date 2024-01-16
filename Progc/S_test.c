@@ -3,18 +3,18 @@
 #include <string.h>
 
 typedef struct EtapeAVL {
-    int id_trajet;
-    int distance;
-    int distance_min;
-    int distance_max;
-    int distance_max_min;
-    int distance_moyenne;
-    int hauteur;
-    int nombre_etapes;
-    struct EtapeAVL *gauche;
-    struct EtapeAVL *droite;
-    struct EtapeAVL *racine;
+  int id_trajet;
+  double distance;
+  double distance_min;
+  double distance_max;
+  double distance_max_min;
+  double distance_moyenne;
+  int hauteur;
+  int nombre_etapes;
+  struct EtapeAVL *gauche;
+  struct EtapeAVL *droite;
 } EtapeAVL;
+
 
 typedef struct Trajet {
  	EtapeAVL* noeud;
