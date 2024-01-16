@@ -6,6 +6,8 @@ Droit :
 	chmod 777 Image/histogramme_horizontal_4.png
 	chmod 777 Image/histogramme_horizontal_5.png
 
+Clean :
+	rm -f Temp/*
 
 D1:
 	./Script.sh D1
