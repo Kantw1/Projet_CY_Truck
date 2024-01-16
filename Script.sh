@@ -55,7 +55,8 @@ traitement_S() {
     echo "Traitement S"
     # lancer les verif et le traitement demandé
     verifier_tout;
-    ./Traitement/S.c
+    gcc Progc/S.c -o Progc/prog_s
+    ./Progc/prog_s s Data/data.csv
 }
 
 #fonction de vérification
