@@ -235,7 +235,7 @@ int main(){
     Trajet *pliste = NULL; // Initialisez votre liste à NULL
     Trajet *tmp = pliste;
 
-    while (fscanf(fichier, "%d;%lf", &id_trajet, &distance) == 2) {
+    while (fscanf(fichier, "%d;%lf", &id_trajet, &distance) == 2 || !feof(fichier)){
     	printf("%d\n", id_trajet);
     	printf("%.3lf\n", distance);
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
