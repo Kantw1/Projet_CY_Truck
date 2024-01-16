@@ -149,13 +149,17 @@ int getBalance(EtapeAVL *node) {
     }
 }
 
-void noeud_max_parcours(arbre){
-	EtapeAVL* parcours=arbre;
-	while (parcours->droite!=NULL){
-		parcours=parcours->droite;
+Trajet* noeud_max_parcours(EtapeAVL* arbre){
+	Trajet* pliste;
+	if (arbre==NULL){
+	   return 0
 	}
-	Trajet* max_50;
-	max_50 = remplir_tab(parcours);
+	pliste=noeud_max_parcours(arbre->droit);
+	pliste=insertPliste(arbre);
+	pliste=noeud_max_parcours(arbre->gauche);
+	return pliste;
+}
+
 int main(int argc, char *argv[]) {
     if (argc != 3) {
         fprintf(stderr, "Usage: %s <option> <fichier.csv>\n", argv[0]);
@@ -185,7 +189,8 @@ int main(int argc, char *argv[]) {
     while (tmp->next!=NULL){
     	arbre=insertAVL(arbre,tmp->noeud);
     }
-    
+    pliste=NULL;
+    noeud_max_parcours(arbre);
     fclose(fichier);
     }
     return 0;
