@@ -3,8 +3,7 @@ fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat.txt"
 fichier_resultats_test="Data/data_s.dat"
 
-#calcul du nombre de trajets de chaque conducteur
-awk -F ';' '!seen[$6,$1]++ { conducteurs[$6]++} END { for (diver in conducteurs) print conducteurs[diver], diver}' $fichier_trajets |sort -k1,1nr | head -n 10 | sort -k1,1n > $fichier_resultats
+#lancer le fichier .c
 
 # utilisation de gnuplot
 gnuplot -persist <<EOF
