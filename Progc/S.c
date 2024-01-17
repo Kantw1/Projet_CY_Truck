@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<stdbool.h>
 
 typedef struct EtapeAVL {
-    int id_trajet;
-    int distance;
-    int distance_min;
-    int distance_max;
-    int distance_max_min;
-    int distance_moyenne;
-    int hauteur;
-    int nombre_etapes;
-    struct EtapeAVL *gauche;
-    struct EtapeAVL *droite;
-    struct EtapeAVL *racine;
+int id_trajet;
+double distance;
+double distance_min;
+double distance_max;
+double distance_max_min;
+double distance_moyenne;
+int hauteur;
+int nombre_etapes;
+struct EtapeAVL *gauche;
+struct EtapeAVL *droite;
 } EtapeAVL;
+
 
 typedef struct Trajet {
  	EtapeAVL* noeud;
@@ -80,7 +81,7 @@ int getBalance(EtapeAVL *node) {
 }
 
 // creation d'un nouveau noeud
-EtapeAVL *newEtapeAVL(int id_trajet,int distance) {
+EtapeAVL *newEtapeAVL(int id_trajet,double distance) {
     EtapeAVL *node = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     if (node == NULL) {
         perror("Erreur d'allocation memoire");
@@ -100,21 +101,60 @@ EtapeAVL *newEtapeAVL(int id_trajet,int distance) {
 }
 
 // modification du noeud 
-Trajet* modifierTrajet(Trajet* root,EtapeAVL* nouvelle_etape){
-	root->noeud->distance+=nouvelle_etape->distance;
-	if (root->noeud->distance_max<nouvelle_etape->distance){
-		root->noeud->distance_max=nouvelle_etape->distance;
-	}
-	if (root->noeud->distance_min>nouvelle_etape->distance){
-		root->noeud->distance_min=nouvelle_etape->distance;
-	}
-	root->noeud->distance_max_min=root->noeud->distance_max-root->noeud->distance_min;
-        root->noeud->nombre_etapes+=1;
-        root->noeud->distance_moyenne=root->noeud->distance/root->noeud->nombre_etapes;
-	return root;
+Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
+    if (root == NULL || root->noeud == NULL) {
+        // Gérer le cas où root ou root->noeud est NULL
+        return root;
+    }
+
+    root->noeud->distance += nouvelle_etape->distance;
+
+    if (root->noeud->distance_max < nouvelle_etape->distance) {
+        root->noeud->distance_max = nouvelle_etape->distance;
+    }
+
+    if (root->noeud->distance_min > nouvelle_etape->distance) {
+        root->noeud->distance_min = nouvelle_etape->distance;
+    }
+
+    root->noeud->distance_max_min = root->noeud->distance_max - root->noeud->distance_min;
+    root->noeud->nombre_etapes += 1;
+    root->noeud->distance_moyenne = root->noeud->distance / root->noeud->nombre_etapes;
+
+    return root;
 }
 
-Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
+
+Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
+    Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
+    if (newNode == NULL) {
+        perror("Erreur d'allocation mémoire");
+        exit(EXIT_FAILURE);
+    }
+    newNode->noeud = nouvelle_etape;
+    newNode->next = NULL;
+
+    if (pliste == NULL) {
+        // Si la liste est vide, le nouveau nœud devient la tête de la liste
+        return newNode;
+    }
+
+    Trajet *tmp = pliste;
+    while (tmp->next != NULL) {
+        if (tmp->noeud->id_trajet == nouvelle_etape->id_trajet) {
+            tmp = modifierTrajet(tmp, nouvelle_etape);
+            free(newNode); // Libérer le nœud nouvellement alloué car il n'est pas nécessaire
+            return pliste; // Pas besoin d'ajouter un nouveau nœud à la liste
+        }
+        tmp = tmp->next;
+    }
+
+    tmp->next = newNode;
+    return pliste;
+}
+
+
+/*/Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
 	Trajet* tmp=pliste;
 	while (tmp != NULL && tmp->next != NULL) {
     		if (tmp->noeud->id_trajet == nouvelle_etape->id_trajet) {
@@ -126,19 +166,59 @@ Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
 	tmp->next->noeud=nouvelle_etape;
 	return pliste;
 }
-	
+/*/
+
+void affichePliste(Trajet* pliste) {
+    Trajet* tmp = pliste;
+
+    printf("Contenu de la liste :\n");
+    while (tmp != NULL) {
+        printf("ID_trajet : %d, Distance : %.3lf\n, Distance_max_min : %.3lf\n", tmp->noeud->id_trajet, tmp->noeud->distance, tmp->noeud->distance_max_min);
+        tmp = tmp->next;
+    }
+}
+/*/
+Trajet* insertPliste(Trajet* pliste, EtapeAVL* nouvelle_etape) {
+    // Rechercher si un Trajet avec le même id_trajet existe déjà dans la liste
+    Trajet* tmp = pliste;
+    while (tmp != NULL) {
+        if (tmp->noeud->id_trajet == nouvelle_etape->id_trajet) {
+            // Modifier le Trajet existant avec la nouvelle étape
+            tmp = modifierTrajet(tmp, nouvelle_etape);
+            return pliste; // Pas besoin d'ajouter un nouveau Trajet à la liste
+        }
+        tmp = tmp->next;
+    }
+
+    // Si aucun Trajet avec le même id_trajet n'a été trouvé, créer un nouveau Trajet
+    Trajet* nouveau_trajet = (Trajet*)malloc(sizeof(Trajet));
+    if (nouveau_trajet == NULL) {
+        perror("Erreur d'allocation mémoire");
+        exit(EXIT_FAILURE);
+    }
+
+    nouveau_trajet->noeud = nouvelle_etape;
+    
+    // Insérer le nouveau Trajet au début de la liste
+    nouveau_trajet->next = pliste;
+
+    // Retourner le nouveau début de la liste
+    return nouveau_trajet;
+}
+/*/	
 // insertion d'un nouveau noeud
-EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
+/*/ EtapeAVL *insertAVL(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
-        root=nouvelle_etape;
+        root = nouvelle_etape;
         return root;
     }
-    if (root->distance_max_min>nouvelle_etape->distance_max_min) {
-        root->gauche = insertAVL(root->gauche,nouvelle_etape);
-    } else if (root->distance_max_min<nouvelle_etape->distance_max_min) {
-        root->droite = insertAVL(root->droite,nouvelle_etape);
-        }
+    if (root->distance_max_min > nouvelle_etape->distance_max_min) {
+        root->gauche = insertAVL(root->gauche, nouvelle_etape);
+    } else if (root->distance_max_min <= nouvelle_etape->distance_max_min) {
+        root->droite = insertAVL(root->droite, nouvelle_etape);
+    }
+
     // Mettre à jour la hauteur du noeud actuel
     root->hauteur = 1 + max(height(root->gauche), height(root->droite));
 
@@ -149,13 +229,91 @@ EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
     if (balance > 1) {
         if (nouvelle_etape->distance_max_min < root->gauche->distance_max_min) {
             return rotateRight(root);
-        } else if (nouvelle_etape->distance_max_min > root->gauche->distance_max_min) {
+        } else if (nouvelle_etape->distance_max_min <= root->gauche->distance_max_min) {
             root->gauche = rotateLeft(root->gauche);
             return rotateRight(root);
         }
     }
 
     return root;
+}
+/*/ 
+
+// Fonction pour insérer un nouveau noeud dans l'arbre AVL
+EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
+    // Effectuer l'insertion de manière normale
+    if (root == NULL) {
+        return nouvelle_etape;
+    }
+    if (nouvelle_etape->distance_max_min < root->distance_max_min) {
+        root->gauche = insertAVLNode(root->gauche, nouvelle_etape);
+    } else if (nouvelle_etape->distance_max_min >= root->distance_max_min) {
+        root->droite = insertAVLNode(root->droite, nouvelle_etape);
+    }
+
+    // Mettre à jour la hauteur du noeud actuel
+    root->hauteur = 1 + max(height(root->gauche), height(root->droite));
+
+    // Obtenir le facteur d'équilibre du noeud
+    int balance = getBalance(root);
+
+    // Cas de déséquilibre à gauche
+    if (balance > 1) {
+        if (nouvelle_etape->distance_max_min < root->gauche->distance_max_min) {
+            return rotateRight(root);
+        } else if (nouvelle_etape->distance_max_min >= root->gauche->distance_max_min) {
+            root->gauche = rotateLeft(root->gauche);
+            return rotateRight(root);
+        }
+    }
+
+    // Cas de déséquilibre à droite
+    if (balance < -1) {
+        if (nouvelle_etape->distance_max_min >= root->droite->distance_max_min) {
+            return rotateLeft(root);
+        } else if (nouvelle_etape->distance_max_min < root->droite->distance_max_min) {
+            root->droite = rotateRight(root->droite);
+            return rotateLeft(root);
+        }
+    }
+
+    return root;
+}
+
+// Fonction pour insérer tous les noeuds de la liste dans l'arbre AVL
+EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
+    Trajet *tmp = pliste;
+    while (tmp != NULL) {
+        arbre = insertAVLNode(arbre, tmp->noeud);
+        tmp = tmp->next;
+    }
+    return arbre;
+}
+
+void parcourirEtAfficherAVL(EtapeAVL* root) {
+    if (root != NULL) {
+        // Parcourir le sous-arbre gauche
+        parcourirEtAfficherAVL(root->gauche);
+
+        // Afficher les informations du noeud courant
+        printf("ID_trajet : %d, Distance : %.3lf\n", root->id_trajet, root->distance);
+
+        // Parcourir le sous-arbre droit
+        parcourirEtAfficherAVL(root->droite);
+    }
+}
+
+void parcourirEtAfficherAVLDecroissant(EtapeAVL* root) {
+    if (root != NULL) {
+        // Parcourir le sous-arbre droit en premier (parcours décroissant)
+        parcourirEtAfficherAVLDecroissant(root->droite);
+
+        // Afficher les informations du noeud courant
+        printf("ID_trajet : %d, Distance : %.3lf, Distance_max_min : %.3lf\n", root->id_trajet, root->distance, root->distance_max_min);
+
+        // Parcourir le sous-arbre gauche
+        parcourirEtAfficherAVLDecroissant(root->gauche);
+    }
 }
 
 
@@ -173,39 +331,52 @@ EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
 }
 /*/
 
-// Nouvelle fonction pour le traitement statistique et la génération du graphique
+// Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
+void fillSortedDataDecreasing(struct EtapeAVL* node, struct EtapeAVL* sortedData[50], int* currentIndex) {
+    if (node != NULL && *currentIndex < 50) {
+        fillSortedDataDecreasing(node->droite, sortedData, currentIndex);
+
+        // Comparaison avec le pointeur node
+        if (*currentIndex < 50) {
+            sortedData[*currentIndex] = node;
+            *currentIndex = *currentIndex + 1;
+        }
+
+        fillSortedDataDecreasing(node->gauche, sortedData, currentIndex);
+    }
+}
+
+
+
+// Fonction pour libérer la mémoire allouée pour chaque élément de sortedData
+void freeSortedData(struct EtapeAVL* sortedData[50], int currentIndex) {
+    for (int i = 0; i < currentIndex; ++i) {
+        free(sortedData[i]);
+    }
+}
+
+// Fonction pour traiter les statistiques et générer le fichier de sortie
 void processStats(struct EtapeAVL* root) {
     // Tableau pour stocker les données triées
-    struct Trajet* sortedData[50];
+    struct EtapeAVL* sortedData[50];
     int currentIndex = 0;
 
     // Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
-    void fillSortedData(struct EtapeAVL* node) {
-    	if (node != NULL && currentIndex < 50) {
-        	fillSortedData(node->droite);
-        	sortedData[currentIndex] = (Trajet*)malloc(sizeof(Trajet));
-        	sortedData[currentIndex++]->noeud = node;
-        	fillSortedData(node->gauche);
-    }
-    // Libération de la mémoire allouée pour chaque élément de sortedData
-    for (int i = 0; i < currentIndex; ++i) {
-    	free(sortedData[i]);
-	}
-
-}
-
-
-    // Remplir le tableau trié
-    fillSortedData(root);
+    fillSortedDataDecreasing(root, sortedData, &currentIndex);
 
     // Afficher les statistiques et générer les données pour le graphique
-    FILE* dataFile = fopen("Temp/Resultat_s2.txt", "a");
-    fprintf(dataFile, "#ID Distance_mini Distance_moyenne Distance_maxi\n");
+    FILE* dataFile = fopen("Temp/Resultat_s2.txt", "w");
+    fprintf(dataFile, "#ID Distance_mini Distance_moyenne Distance_maxi Distance_max-Distance_min\n");
     for (int i = 0; i < currentIndex; ++i) {
-        fprintf(dataFile, "%.2lf %.2lf %.2lf %.2lf %.2lf\n", sortedData[i]->noeud->id_trajet, sortedData[i]->noeud->distance_min, sortedData[i]->noeud->distance_moyenne, sortedData[i]->noeud->distance_max, sortedData[i]->noeud->distance_max_min);
+        fprintf(dataFile, "%d %.2lf %.2lf %.2lf %.2lf\n", sortedData[i]->id_trajet, sortedData[i]->distance_min, sortedData[i]->distance_moyenne, sortedData[i]->distance_max, sortedData[i]->distance_max_min);
     }
     fclose(dataFile);
+
+    // Libération de la mémoire allouée pour chaque élément de sortedData
+    freeSortedData(sortedData, currentIndex);
 }
+
+
 
 int main(){
     FILE *fichier = fopen("Temp/Resultat_s.txt", "r");
@@ -213,27 +384,38 @@ int main(){
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     } 
-    int id_trajet, distance;
+    int id_trajet;
+    double distance;
+    int compteur;
     EtapeAVL *arbre = NULL;
-    Trajet* pliste = (Trajet*)malloc(sizeof(Trajet));
-    pliste->next=NULL;
-    Trajet* tmp=pliste;
-    
-    while (fscanf(fichier, "%d;%lf", &id_trajet, &distance) ==2) {
-    printf("%d\n", id_trajet);
-    printf("%.3lf\n", distance);  // Affichez la distance avec trois décimales pour la cohérence
-    EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
-    tmp = insertPliste(tmp, nouvelle_etape);
-    }
-
-    while (tmp != NULL && tmp->next != NULL) {
+    Trajet *pliste = NULL; // Initialisez votre liste à NULL
+    Trajet *tmp = pliste;
+    //while (fscanf(fichier, "%d %lf", &id_trajet, &distance) == 2 || !feof(fichier)){
+      while (feof(fichier) != true){ 
+      	compteur++;
+      	fscanf(fichier, "%d", &id_trajet);
+      	fscanf(fichier, "%lf", &distance);
+    	printf("ID_trajet : %d, Distance : %.3lf %d\n", id_trajet, distance,compteur);
+    	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
+    	pliste = insertPliste(pliste, nouvelle_etape);
+}
+    affichePliste(pliste);
+    /*/while (tmp != NULL && tmp->next != NULL) {
     arbre = insertAVL(arbre, tmp->noeud);
     tmp = tmp->next;
-    }
+    } /*/
+    arbre = insertAVLFromList(pliste, arbre);
+    printf("Contenu de l'arbre \n");
+    parcourirEtAfficherAVLDecroissant(arbre);
     pliste=NULL;
     processStats(arbre);
     fclose(fichier);
-    
+    while (pliste != NULL) {
+    Trajet *temp = pliste;
+    pliste = pliste->next;
+    free(temp);
+	}
+
     return 0;
 }
 
