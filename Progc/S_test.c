@@ -125,7 +125,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
 }
 
 
-Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
+/*/Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
         perror("Erreur d'allocation mémoire");
@@ -152,7 +152,7 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     tmp->next = newNode;
     return pliste;
 }
-
+/*/
 
 /*/Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
 	Trajet* tmp=pliste;
@@ -166,7 +166,46 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
 	tmp->next->noeud=nouvelle_etape;
 	return pliste;
 }
-/*/	
+/*/
+
+void affichePliste(Trajet* pliste) {
+    Trajet* tmp = pliste;
+
+    printf("Contenu de la liste :\n");
+    while (tmp != NULL) {
+        printf("ID_trajet : %d, Distance : %.3lf\n", tmp->noeud->id_trajet, tmp->noeud->distance);
+        tmp = tmp->next;
+    }
+}
+
+Trajet* insertPliste(Trajet* pliste, EtapeAVL* nouvelle_etape) {
+    // Rechercher si un Trajet avec le même id_trajet existe déjà dans la liste
+    Trajet* tmp = pliste;
+    while (tmp != NULL) {
+        if (tmp->noeud->id_trajet == nouvelle_etape->id_trajet) {
+            // Modifier le Trajet existant avec la nouvelle étape
+            tmp = modifierTrajet(tmp, nouvelle_etape);
+            return pliste; // Pas besoin d'ajouter un nouveau Trajet à la liste
+        }
+        tmp = tmp->next;
+    }
+
+    // Si aucun Trajet avec le même id_trajet n'a été trouvé, créer un nouveau Trajet
+    Trajet* nouveau_trajet = (Trajet*)malloc(sizeof(Trajet));
+    if (nouveau_trajet == NULL) {
+        perror("Erreur d'allocation mémoire");
+        exit(EXIT_FAILURE);
+    }
+
+    nouveau_trajet->noeud = nouvelle_etape;
+    
+    // Insérer le nouveau Trajet au début de la liste
+    nouveau_trajet->next = pliste;
+
+    // Retourner le nouveau début de la liste
+    return nouveau_trajet;
+}
+	
 // insertion d'un nouveau noeud
 EtapeAVL *insertAVL(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
@@ -276,9 +315,7 @@ int main(){
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
-
-
-
+    affichePliste(pliste);
     while (tmp != NULL && tmp->next != NULL) {
     arbre = insertAVL(arbre, tmp->noeud);
     tmp = tmp->next;
