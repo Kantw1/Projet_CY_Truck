@@ -54,7 +54,7 @@ int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
-// fonction pour calculer hauteur d'un arbre
+// fonction pour calculer la hauteur d'un arbre
 int height(AVLville *node) {
     if (node == NULL) {
         return 0; // La hauteur d'un nœud vide est 0
@@ -125,7 +125,6 @@ AVLville *newAVLville(int id_trajet, int a, char *ville) {
 
 // insertion d'un nouveau noeud
 AVLville *insert(AVLville *root, int id_trajet, int a, char *ville) {
-    // Effectuer l'insertion de manière normale
     if (root == NULL) {
         return newAVLville(id_trajet, a, ville);
     }
@@ -136,7 +135,7 @@ AVLville *insert(AVLville *root, int id_trajet, int a, char *ville) {
     } else {
         return root;
     }
-    // Mettre à jour la hauteur du nœud actuel
+    // Mise à jour de la hauteur du nœud actuel
     root->hauteur = 1 + max(height(root->gauche), height(root->droite));
 
     // Obtenir le facteur d'équilibre du nœud
@@ -163,7 +162,7 @@ Ville *insert_stat(Ville *l1, char vil[50], int k, int l) {
     if (newVille == NULL) {
         perror("Erreur d'allocation mémoire");
         exit(EXIT_FAILURE);
-    };
+    }
     strncpy(newVille->nom, vil, 50);
     newVille->trajet_total = k;
     newVille->departs = l;
@@ -180,30 +179,29 @@ Ville *insert_stat(Ville *l1, char vil[50], int k, int l) {
     return l1;
 }
 
-// Fonction pour insérer une ville dans la liste des villes
-Ville *insertionVille(Ville *pliste, char vil[50]) {
-    Ville *nouvelleVille = (Ville *)malloc(sizeof(Ville));
-    if (nouvelleVille == NULL) {
-        perror("Erreur d'allocation mémoire");
-        exit(EXIT_FAILURE);
+// Fonction pour insérer une ville dans l'arbre AVL et mettre à jour les statistiques
+AVLville *insertAndUpdateStats(AVLville *root, char *ville, int *trajetsTotal, int *departsTotal) {
+    if (root == NULL) {
+        return newAVLville(0, 0, ville);
     }
-    strncpy(nouvelleVille->nom, vil, 50);
-    nouvelleVille->next = pliste;
-    return nouvelleVille;
-}
 
-// Fonction pour désallouer la liste des villes
-void desalouerVille(Ville *l1) {
-    while (l1 != NULL) {
-        Ville *aLiberer = l1;
-        l1 = l1->next;
-        free(aLiberer);
+    int cmp = strcmp(ville, root->ville);
+
+    if (cmp < 0) {
+        root->gauche = insertAndUpdateStats(root->gauche, ville, trajetsTotal, departsTotal);
+    } else if (cmp > 0) {
+        root->droite = insertAndUpdateStats(root->droite, ville, trajetsTotal, departsTotal);
     }
-}
 
-// Fonction pour désallouer la liste des étapes
-void desalouerEtapes(Etape *p1) {
-    free(p1);
+    // Mise à jour des statistiques
+    root->elm->trajet_total = 1 + compterNoeuds(root->gauche) + compterNoeuds(root->droite);
+    root->elm->departs = 1 + compterDepart(root->gauche) + compterDepart(root->droite);
+
+    // Mise à jour des totaux
+    *trajetsTotal += root->elm->trajet_total;
+    *departsTotal += root->elm->departs;
+
+    return root;
 }
 
 int main(int argc, char *argv[]) {
@@ -222,70 +220,71 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
- Etape *p1 = NULL;
-int nombre_etapes = 0;
-int capacite = 1;
+        Etape *p1 = NULL;
+        int nombre_etapes = 0;
+        int capacite = 1;
 
-// Allocation initiale de mémoire pour une étape
-p1 = (Etape *)malloc(capacite * sizeof(Etape));
-if (p1 == NULL) {
-    fprintf(stderr, "Erreur d'allocation de mémoire.\n");
-    return 1;
-}
-
-while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[nombre_etapes].ville_depart, p1[nombre_etapes].ville_arrivee) == 3) {
-    nombre_etapes++;
-
-    // Vérifier si la capacité actuelle est atteinte
-    if (nombre_etapes >= capacite) {
-        capacite *= 2;  // Double la capacité
-
-        // Utilisation de realloc pour agrandir l'espace mémoire
-        Etape *temp = realloc(p1, capacite * sizeof(Etape));
-        if (temp == NULL) {
-            fprintf(stderr, "Erreur d'allocation de la mémoire.\n");
-
-            // Gestion de la désallocation des ressources précédemment allouées
-            for (int i = 0; i < nombre_etapes; i++) {
-                free(p1[i].ville_depart);
-                free(p1[i].ville_arrivee);
-            }
-            free(p1);
-
+        // Allocation initiale de mémoire pour une étape
+        p1 = (Etape *)malloc(capacite * sizeof(Etape));
+        if (p1 == NULL) {
+            fprintf(stderr, "Erreur d'allocation de mémoire.\n");
             return 1;
-        } 
-        else {
-            p1 = temp;
         }
-    }
-}
 
+        while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[nombre_etapes].ville_depart, p1[nombre_etapes].ville_arrivee) == 3) {
+            nombre_etapes++;
+
+            // Vérifier si la capacité actuelle est atteinte
+            if (nombre_etapes >= capacite) {
+                capacite *= 2;  // Double la capacité
+
+                // Utilisation de realloc pour agrandir l'espace mémoire
+                Etape *temp = realloc(p1, capacite * sizeof(Etape));
+                if (temp == NULL) {
+                    fprintf(stderr, "Erreur d'allocation de la mémoire.\n");
+
+                    // Gestion de la désallocation des ressources précédemment allouées
+                    for (int i = 0; i < nombre_etapes; i++) {
+                        free(p1[i].ville_depart);
+                        free(p1[i].ville_arrivee);
+                    }
+                    free(p1);
+
+                    return 1;
+                } else {
+                    p1 = temp;
+                }
+            }
+        }
 
         int a = 1;
         int b = 0;
         int i = 0;
         Ville *pliste = NULL;
 
-        for (int i = 0; i < nombre_etapes; i++) {
-            AVLville *racine_depart = NULL;
-            AVLville *racine_arrivee = NULL;
+        AVLville *racine_depart = NULL;
+        AVLville *racine_arrivee = NULL;
 
+        // Traitement des étapes
+        for (int i = 0; i < nombre_etapes; i++) {
             // Utilisation de strncpy pour copier les noms des villes
-            racine_depart = insert(racine_depart, p1[i].id_trajet, a, p1[i].ville_depart);
-            racine_arrivee = insert(racine_arrivee, p1[i].id_trajet, b, p1[i].ville_arrivee);
+            racine_depart = insertAndUpdateStats(racine_depart, p1[i].ville_depart, &trajetsTotal, &departsTotal);
+            racine_arrivee = insertAndUpdateStats(racine_arrivee, p1[i].ville_arrivee, &trajetsTotal, &departsTotal);
 
             pliste = insertionVille(pliste, p1[i].ville_depart);
             pliste = insertionVille(pliste, p1[i].ville_arrivee);
         }
 
+        // Traitement des statistiques
         Ville *l1 = NULL;
         int k = 0;
         int l = 0;
 
-       while (pliste != NULL) {
+        while (pliste != NULL) {
             AVLville *tmp = (AVLville *)malloc(sizeof(AVLville));
             if (tmp == NULL) {
                 perror("Erreur d'allocation mémoire");
+                exit(EXIT_FAILURE);
             }
             tmp->elm = pliste;
             k = compterNoeuds(tmp->gauche) + 1 + compterNoeuds(tmp->droite);
@@ -295,6 +294,7 @@ while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[no
             free(tmp);
         }
 
+        // Affichage des 10 premières villes
         Ville Top10[10];
         Ville *tmp1 = l1;
 
@@ -305,10 +305,10 @@ while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[no
             tmp1 = tmp1->next;
         }
 
-         for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             printf("Nom de la ville : %s Nombre de trajets : %d Nombre de fois départ : %d\n", Top10[i].nom, Top10[i].trajet_total, Top10[i].departs);
         }
-        
+
         // Désallocation des ressources
         desalouerVille(pliste);
         desalouerVille(l1);
@@ -317,5 +317,6 @@ while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[no
         fclose(fichier);
         return 0;
     }
+
     return 0;
 }
