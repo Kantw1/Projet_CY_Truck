@@ -1,18 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<stdbool.h>
 
 typedef struct EtapeAVL {
-  int id_trajet;
-  double distance;
-  double distance_min;
-  double distance_max;
-  double distance_max_min;
-  double distance_moyenne;
-  int hauteur;
-  int nombre_etapes;
-  struct EtapeAVL *gauche;
-  struct EtapeAVL *droite;
+int id_trajet;
+double distance;
+double distance_min;
+double distance_max;
+double distance_max_min;
+double distance_moyenne;
+int hauteur;
+int nombre_etapes;
+struct EtapeAVL *gauche;
+struct EtapeAVL *droite;
 } EtapeAVL;
 
 
@@ -100,19 +101,29 @@ EtapeAVL *newEtapeAVL(int id_trajet,int distance) {
 }
 
 // modification du noeud 
-Trajet* modifierTrajet(Trajet* root,EtapeAVL* nouvelle_etape){
-	root->noeud->distance+=nouvelle_etape->distance;
-	if (root->noeud->distance_max<nouvelle_etape->distance){
-		root->noeud->distance_max=nouvelle_etape->distance;
-	}
-	if (root->noeud->distance_min>nouvelle_etape->distance){
-		root->noeud->distance_min=nouvelle_etape->distance;
-	}
-	root->noeud->distance_max_min=root->noeud->distance_max-root->noeud->distance_min;
-        root->noeud->nombre_etapes+=1;
-        root->noeud->distance_moyenne=root->noeud->distance/root->noeud->nombre_etapes;
-	return root;
+Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
+    if (root == NULL || root->noeud == NULL) {
+        // Gérer le cas où root ou root->noeud est NULL
+        return root;
+    }
+
+    root->noeud->distance += nouvelle_etape->distance;
+
+    if (root->noeud->distance_max < nouvelle_etape->distance) {
+        root->noeud->distance_max = nouvelle_etape->distance;
+    }
+
+    if (root->noeud->distance_min > nouvelle_etape->distance) {
+        root->noeud->distance_min = nouvelle_etape->distance;
+    }
+
+    root->noeud->distance_max_min = root->noeud->distance_max - root->noeud->distance_min;
+    root->noeud->nombre_etapes += 1;
+    root->noeud->distance_moyenne = root->noeud->distance / root->noeud->nombre_etapes;
+
+    return root;
 }
+
 
 Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
@@ -122,6 +133,11 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     }
     newNode->noeud = nouvelle_etape;
     newNode->next = NULL;
+
+    if (pliste == NULL) {
+        // Si la liste est vide, le nouveau nœud devient la tête de la liste
+        return newNode;
+    }
 
     Trajet *tmp = pliste;
     while (tmp->next != NULL) {
@@ -137,19 +153,33 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     return pliste;
 }
 
-	
+
+/*/Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
+	Trajet* tmp=pliste;
+	while (tmp != NULL && tmp->next != NULL) {
+    		if (tmp->noeud->id_trajet == nouvelle_etape->id_trajet) {
+        		tmp = modifierTrajet(tmp, nouvelle_etape);
+    	}
+    	tmp = tmp->next;
+	}
+
+	tmp->next->noeud=nouvelle_etape;
+	return pliste;
+}
+/*/	
 // insertion d'un nouveau noeud
-EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
+EtapeAVL *insertAVL(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
-        root=nouvelle_etape;
+        root = nouvelle_etape;
         return root;
     }
-    if (root->distance_max_min>nouvelle_etape->distance_max_min) {
-        root->gauche = insertAVL(root->gauche,nouvelle_etape);
-    } else if (root->distance_max_min<nouvelle_etape->distance_max_min) {
-        root->droite = insertAVL(root->droite,nouvelle_etape);
-        }
+    if (root->distance_max_min > nouvelle_etape->distance_max_min) {
+        root->gauche = insertAVL(root->gauche, nouvelle_etape);
+    } else if (root->distance_max_min <= nouvelle_etape->distance_max_min) {
+        root->droite = insertAVL(root->droite, nouvelle_etape);
+    }
+
     // Mettre à jour la hauteur du noeud actuel
     root->hauteur = 1 + max(height(root->gauche), height(root->droite));
 
@@ -160,7 +190,7 @@ EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
     if (balance > 1) {
         if (nouvelle_etape->distance_max_min < root->gauche->distance_max_min) {
             return rotateRight(root);
-        } else if (nouvelle_etape->distance_max_min > root->gauche->distance_max_min) {
+        } else if (nouvelle_etape->distance_max_min <= root->gauche->distance_max_min) {
             root->gauche = rotateLeft(root->gauche);
             return rotateRight(root);
         }
@@ -168,6 +198,7 @@ EtapeAVL *insertAVL(EtapeAVL *root,EtapeAVL *nouvelle_etape) {
 
     return root;
 }
+
 
 
 
@@ -214,7 +245,7 @@ void processStats(struct EtapeAVL* root) {
     FILE* dataFile = fopen("Temp/Resultat_s2.txt", "w");
     fprintf(dataFile, "#ID Distance_mini Distance_moyenne Distance_maxi Distance_max-Distance_min\n");
     for (int i = 0; i < currentIndex; ++i) {
-        fprintf(dataFile, "%.2lf %.2lf %.2lf %.2lf %.2lf\n", sortedData[i]->noeud->id_trajet, sortedData[i]->noeud->distance_min, sortedData[i]->noeud->distance_moyenne, sortedData[i]->noeud->distance_max, sortedData[i]->noeud->distance_max_min);
+        fprintf(dataFile, "%d %.2lf %.2lf %.2lf %.2lf\n", sortedData[i]->noeud->id_trajet, sortedData[i]->noeud->distance_min, sortedData[i]->noeud->distance_moyenne, sortedData[i]->noeud->distance_max, sortedData[i]->noeud->distance_max_min);
     }
     fclose(dataFile);
 
@@ -230,17 +261,22 @@ int main(){
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     } 
-    int id_trajet, distance;
+    int id_trajet;
+    double distance;
+    int compteur;
     EtapeAVL *arbre = NULL;
     Trajet *pliste = NULL; // Initialisez votre liste à NULL
     Trajet *tmp = pliste;
-
-    while (fscanf(fichier, "%d;%lf", &id_trajet, &distance) == 2 || !feof(fichier)){
-    	printf("%d\n", id_trajet);
-    	printf("%.3lf\n", distance);
+    //while (fscanf(fichier, "%d %lf", &id_trajet, &distance) == 2 || !feof(fichier)){
+      while (feof(fichier) != true){ 
+      	compteur++;
+      	fscanf(fichier, "%d", &id_trajet);
+      	fscanf(fichier, "%lf", &distance);
+    	printf("ID_trajet : %d, Distance : %.3lf %d\n", id_trajet, distance,compteur);
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
+
 
 
     while (tmp != NULL && tmp->next != NULL) {
