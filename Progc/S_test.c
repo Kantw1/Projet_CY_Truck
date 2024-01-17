@@ -81,7 +81,7 @@ int getBalance(EtapeAVL *node) {
 }
 
 // creation d'un nouveau noeud
-EtapeAVL *newEtapeAVL(int id_trajet,int distance) {
+EtapeAVL *newEtapeAVL(int id_trajet,double distance) {
     EtapeAVL *node = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     if (node == NULL) {
         perror("Erreur d'allocation memoire");
@@ -125,7 +125,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
 }
 
 
-/*/Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
+Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
         perror("Erreur d'allocation mémoire");
@@ -152,7 +152,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
     tmp->next = newNode;
     return pliste;
 }
-/*/
+
 
 /*/Trajet *insertPliste(Trajet *pliste,EtapeAVL *nouvelle_etape){
 	Trajet* tmp=pliste;
@@ -173,11 +173,11 @@ void affichePliste(Trajet* pliste) {
 
     printf("Contenu de la liste :\n");
     while (tmp != NULL) {
-        printf("ID_trajet : %d, Distance : %.3lf\n", tmp->noeud->id_trajet, tmp->noeud->distance);
+        printf("ID_trajet : %d, Distance : %.3lf\n, Distance_max_min : %.3lf\n", tmp->noeud->id_trajet, tmp->noeud->distance, tmp->noeud->distance_max_min);
         tmp = tmp->next;
     }
 }
-
+/*/
 Trajet* insertPliste(Trajet* pliste, EtapeAVL* nouvelle_etape) {
     // Rechercher si un Trajet avec le même id_trajet existe déjà dans la liste
     Trajet* tmp = pliste;
@@ -205,9 +205,9 @@ Trajet* insertPliste(Trajet* pliste, EtapeAVL* nouvelle_etape) {
     // Retourner le nouveau début de la liste
     return nouveau_trajet;
 }
-	
+/*/	
 // insertion d'un nouveau noeud
-EtapeAVL *insertAVL(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
+/*/ EtapeAVL *insertAVL(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
         root = nouvelle_etape;
@@ -237,7 +237,84 @@ EtapeAVL *insertAVL(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
 
     return root;
 }
+/*/ 
 
+// Fonction pour insérer un nouveau noeud dans l'arbre AVL
+EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
+    // Effectuer l'insertion de manière normale
+    if (root == NULL) {
+        return nouvelle_etape;
+    }
+    if (nouvelle_etape->distance_max_min < root->distance_max_min) {
+        root->gauche = insertAVLNode(root->gauche, nouvelle_etape);
+    } else if (nouvelle_etape->distance_max_min >= root->distance_max_min) {
+        root->droite = insertAVLNode(root->droite, nouvelle_etape);
+    }
+
+    // Mettre à jour la hauteur du noeud actuel
+    root->hauteur = 1 + max(height(root->gauche), height(root->droite));
+
+    // Obtenir le facteur d'équilibre du noeud
+    int balance = getBalance(root);
+
+    // Cas de déséquilibre à gauche
+    if (balance > 1) {
+        if (nouvelle_etape->distance_max_min < root->gauche->distance_max_min) {
+            return rotateRight(root);
+        } else if (nouvelle_etape->distance_max_min >= root->gauche->distance_max_min) {
+            root->gauche = rotateLeft(root->gauche);
+            return rotateRight(root);
+        }
+    }
+
+    // Cas de déséquilibre à droite
+    if (balance < -1) {
+        if (nouvelle_etape->distance_max_min >= root->droite->distance_max_min) {
+            return rotateLeft(root);
+        } else if (nouvelle_etape->distance_max_min < root->droite->distance_max_min) {
+            root->droite = rotateRight(root->droite);
+            return rotateLeft(root);
+        }
+    }
+
+    return root;
+}
+
+// Fonction pour insérer tous les noeuds de la liste dans l'arbre AVL
+EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
+    Trajet *tmp = pliste;
+    while (tmp != NULL) {
+        arbre = insertAVLNode(arbre, tmp->noeud);
+        tmp = tmp->next;
+    }
+    return arbre;
+}
+
+void parcourirEtAfficherAVL(EtapeAVL* root) {
+    if (root != NULL) {
+        // Parcourir le sous-arbre gauche
+        parcourirEtAfficherAVL(root->gauche);
+
+        // Afficher les informations du noeud courant
+        printf("ID_trajet : %d, Distance : %.3lf\n", root->id_trajet, root->distance);
+
+        // Parcourir le sous-arbre droit
+        parcourirEtAfficherAVL(root->droite);
+    }
+}
+
+void parcourirEtAfficherAVLDecroissant(EtapeAVL* root) {
+    if (root != NULL) {
+        // Parcourir le sous-arbre droit en premier (parcours décroissant)
+        parcourirEtAfficherAVLDecroissant(root->droite);
+
+        // Afficher les informations du noeud courant
+        printf("ID_trajet : %d, Distance : %.3lf, Distance_max_min : %.3lf\n", root->id_trajet, root->distance, root->distance_max_min);
+
+        // Parcourir le sous-arbre gauche
+        parcourirEtAfficherAVLDecroissant(root->gauche);
+    }
+}
 
 
 
@@ -316,10 +393,13 @@ int main(){
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
     affichePliste(pliste);
-    while (tmp != NULL && tmp->next != NULL) {
+    /*/while (tmp != NULL && tmp->next != NULL) {
     arbre = insertAVL(arbre, tmp->noeud);
     tmp = tmp->next;
-    }
+    } /*/
+    arbre = insertAVLFromList(pliste, arbre);
+    printf("Contenu de l'arbre \n");
+    parcourirEtAfficherAVLDecroissant(arbre);
     pliste=NULL;
     processStats(arbre);
     fclose(fichier);
