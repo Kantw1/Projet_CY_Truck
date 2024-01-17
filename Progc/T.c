@@ -305,7 +305,7 @@ int main(int argc, char *argv[]) {
             tmp1 = tmp1->next;
         }
         
-    FILE *resultatsFile = fopen("resultats.txt", "w");
+    FILE *resultatsFile = fopen("Temp/resultats.txt_t", "w");
         if (resultatsFile == NULL) {
             fprintf(stderr, "Erreur d'ouverture du fichier de résultats.\n");
             return 1;
