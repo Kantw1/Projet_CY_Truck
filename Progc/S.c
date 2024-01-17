@@ -20,6 +20,7 @@ struct EtapeAVL *droite;
 typedef struct Trajet {
  	EtapeAVL* noeud;
  	struct Trajet* next;
+    struct Trajet *end;
 } Trajet;
 
 // fonction usuelle pour avoir le max entre deux données
@@ -124,8 +125,8 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
     return root;
 }
 
-
-Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
+/*
+Trajet *insertPliste_Baptiste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
         perror("Erreur d'allocation mémoire");
@@ -150,6 +151,34 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     }
 
     tmp->next = newNode;
+    return pliste;
+}
+*/
+Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
+    Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
+    if (newNode == NULL) {
+        perror("Erreur d'allocation mémoire");
+        exit(EXIT_FAILURE);
+    }
+    newNode->noeud = nouvelle_etape;
+    newNode->next = NULL;
+
+    if (pliste == NULL) {
+        // Si la liste est vide, le nouveau nœud devient la tête de la liste
+        Trajet * inter = newNode;
+        inter->end = newNode;
+        return inter;
+    }
+
+    Trajet *tmp = pliste;
+        if (tmp->end->noeud->id_trajet == nouvelle_etape->id_trajet) {
+            tmp = modifierTrajet(tmp, nouvelle_etape);
+            free(newNode); // Libérer le nœud nouvellement alloué car il n'est pas nécessaire
+            return pliste; // Pas besoin d'ajouter un nouveau nœud à la liste
+    }
+
+    tmp->end->next = newNode;
+    tmp->end = tmp->end->next;
     return pliste;
 }
 
@@ -399,14 +428,14 @@ int main(){
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
-    affichePliste(pliste);
+    /*affichePliste(pliste);*/
     /*/while (tmp != NULL && tmp->next != NULL) {
     arbre = insertAVL(arbre, tmp->noeud);
     tmp = tmp->next;
     } /*/
     arbre = insertAVLFromList(pliste, arbre);
     printf("Contenu de l'arbre \n");
-    parcourirEtAfficherAVLDecroissant(arbre);
+    /*parcourirEtAfficherAVLDecroissant(arbre);*/
     pliste=NULL;
     processStats(arbre);
     fclose(fichier);

@@ -4,7 +4,7 @@ fichier_trajets="Data/data.csv"
 fichier_resultats_test="Data/data_s.txt"
 fichier_resultats="Temp/Resultat_s.txt"
 
-#cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n> $fichier_resultats
+cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n | sed 's/;/ /g'> $fichier_resultats
 ./Progc/prog_s
 # Lancer le fichier .c
 
