@@ -1,7 +1,9 @@
-#!/bin/bash
+fichier_trajets="Data/data.csv"
+# Commande pour extraire les colonnes 2 et 5 du fichier CSV et les sauvegarder dans un fichier texte temporaire
+cut -d';' -f1,5 "$fichier_trajets" > Temp/Resultat_s.txt
 
-# Commande pour trier les données en utilisant le programme C
-./traitement_s
+# Commande pour exécuter le programme C
+./Progc/S.c
 
 # Commandes Gnuplot
 gnuplot << EOF
