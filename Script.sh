@@ -46,7 +46,6 @@ traitement_T() {
     echo "Traitement T"
     # lancer les verif et le traitement demandé
     verifier_tout;
-    gcc Progc/T.c -o Progc/prog_t
     ./Progc/prog_t t Data/data.csv
 }
 
@@ -66,20 +65,27 @@ if [ ! -f "$fichier1" ]; then
     echo "Erreur : Le fichier $fichier1 n'existe pas."
 fi
 
-executable1="Progc/prog1"  # executable du traitement T
-executable2="Progc/prog2"  # executable du traitement S
+executable1="Progc/prog_t"  # executable du traitement T
+executable2="Progc/prog_s"  # executable du traitement S
 
 #vérifier si l'executable c existe
-if command -v "$executable1" >/dev/null 2>&1 && command -v "$executable2" >/dev/null 2>&1; then
-    echo "L'exécutable $executable1 existe."
+if command -v "$executable1" >/dev/null 2>&1; then
     echo "L'exécutable $executable1 existe."
 else
-    echo "Erreur : Les exécutables $executable n'existe pas."
+    echo "Erreur : Les exécutables $executable1"
     cd Progc
-    make build
+    gcc Progc/T.c -o Progc/prog_t
     cd ..
 fi
 
+if command -v "$executable2" >/dev/null 2>&1; then
+    echo "L'exécutable $executable2 existe."
+else
+    echo "Erreur : Les exécutables $executable2"
+    cd Progc
+    #gcc Progc/T.c -o Progc/prog_s
+    cd ..
+fi
 
 #vérifier si le dossier Temp existe
 if [ ! -d "Temp" ]; then

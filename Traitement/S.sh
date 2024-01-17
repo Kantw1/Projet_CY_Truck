@@ -1,6 +1,5 @@
 #création des fichiers nécessaires !
 fichier_trajets="Data/data.csv"
-fichier_resultats="Temp/resultat.txt"
 fichier_resultats_test="Data/data_s.dat"
 
 #lancer le fichier .c
