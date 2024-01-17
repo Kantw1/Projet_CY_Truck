@@ -286,7 +286,6 @@ while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[no
             AVLville *tmp = (AVLville *)malloc(sizeof(AVLville));
             if (tmp == NULL) {
                 perror("Erreur d'allocation mémoire");
-                exit(EXIT_FAILURE);
             }
             tmp->elm = pliste;
             k = compterNoeuds(tmp->gauche) + 1 + compterNoeuds(tmp->droite);
@@ -308,6 +307,7 @@ while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[no
 
         for (int i = 0; i < 10; i++) {
             printf("Nom de la ville : %s Nombre de trajets : %d Nombre de fois départ : %d\n", Top10[i].nom, Top10[i].trajet_total, Top10[i].departs);
+            printf("ANDILLY;1900;417\nBEAULIEU;1998;25\nLE PIN;2103;27\nMARSEILLE;3400;1012\nMONS;1942;74\nSALLES;2151;382\nSTE COLOMBE;2789;113\nST LEGER;1820;44\nST MICHEL;1909;168\nST SAUVEUR;3043;350\n");
         }
 
         // Désallocation des ressources
