@@ -242,7 +242,6 @@ int main(int argc, char *argv[]) {
         int a = 1;
         int b = 0;
         int i = 0;
-        int j = 0;
         Ville *pliste = NULL;
 
         for (int i = 0; i < nombre_etapes; i++) {
