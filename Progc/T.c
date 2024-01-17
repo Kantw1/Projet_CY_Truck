@@ -304,16 +304,22 @@ int main(int argc, char *argv[]) {
             Top10[j].trajet_total = tmp1->trajet_total;
             tmp1 = tmp1->next;
         }
-
+        
+    FILE *resultatsFile = fopen("resultats.txt", "w");
+        if (resultatsFile == NULL) {
+            fprintf(stderr, "Erreur d'ouverture du fichier de résultats.\n");
+            return 1;
+        }
+        
         for (int i = 0; i < 10; i++) {
-            printf("Nom de la ville : %s Nombre de trajets : %d Nombre de fois départ : %d\n", Top10[i].nom, Top10[i].trajet_total, Top10[i].departs);
+            fprintf("Nom de la ville : %s Nombre de trajets : %d Nombre de fois départ : %d\n", Top10[i].nom, Top10[i].trajet_total, Top10[i].departs);
         }
 
         // Désallocation des ressources
         desalouerVille(pliste);
         desalouerVille(l1);
         desalouerEtapes(p1);
-
+        fclose(resultatsFile);
         fclose(fichier);
         return 0;
     }
