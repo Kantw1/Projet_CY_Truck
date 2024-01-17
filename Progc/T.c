@@ -261,13 +261,18 @@ int main(int argc, char *argv[]) {
         int k = 0;
         int l = 0;
 
-        while (pliste != NULL) {
-            AVLville *tmp = NULL;
+       while (pliste != NULL) {
+            AVLville *tmp = (AVLville *)malloc(sizeof(AVLville));
+            if (tmp == NULL) {
+                perror("Erreur d'allocation mémoire");
+                exit(EXIT_FAILURE);
+            }
             tmp->elm = pliste;
             k = compterNoeuds(tmp->gauche) + 1 + compterNoeuds(tmp->droite);
             l = compterDepart(tmp->gauche) + compterDepart(tmp->droite);
             l1 = insert_stat(l1, tmp->ville, k, l);
             pliste = pliste->next;
+            free(tmp);
         }
 
         Ville Top10[10];
