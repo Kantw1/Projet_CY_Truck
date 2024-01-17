@@ -222,22 +222,44 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        Etape *p1 = NULL;
-        int nombre_etapes = 0;
+ Etape *p1 = NULL;
+int nombre_etapes = 0;
+int capacite = 1;
 
-        // Utilisation de malloc pour allouer de l'espace pour une étape
-        p1 = (Etape *)malloc(sizeof(Etape));
+// Allocation initiale de mémoire pour une étape
+p1 = (Etape *)malloc(capacite * sizeof(Etape));
+if (p1 == NULL) {
+    fprintf(stderr, "Erreur d'allocation de mémoire.\n");
+    return 1;
+}
 
-        while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[nombre_etapes].ville_depart, p1[nombre_etapes].ville_arrivee) != EOF) {
-            nombre_etapes++;
+while (fscanf(fichier, "%d,%49[^,],%49[^,]", &p1[nombre_etapes].id_trajet, p1[nombre_etapes].ville_depart, p1[nombre_etapes].ville_arrivee) == 3) {
+    nombre_etapes++;
 
-            // Utilisation de realloc pour agrandir l'espace mémoire
-            p1 = realloc(p1, (nombre_etapes + 1) * sizeof(Etape));
-            if (p1 == NULL) {
-                fprintf(stderr, "Erreur d'allocation de mémoire.\n");
-                return 1;
+    // Vérifier si la capacité actuelle est atteinte
+    if (nombre_etapes >= capacite) {
+        capacite *= 2;  // Double la capacité
+
+        // Utilisation de realloc pour agrandir l'espace mémoire
+        Etape *temp = realloc(p1, capacite * sizeof(Etape));
+        if (temp == NULL) {
+            fprintf(stderr, "Erreur d'allocation de la mémoire.\n");
+
+            // Gestion de la désallocation des ressources précédemment allouées
+            for (int i = 0; i < nombre_etapes; i++) {
+                free(p1[i].ville_depart);
+                free(p1[i].ville_arrivee);
             }
+            free(p1);
+
+            return 1;
+        } 
+        else {
+            p1 = temp;
         }
+    }
+}
+
 
         int a = 1;
         int b = 0;
