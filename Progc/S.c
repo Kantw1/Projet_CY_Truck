@@ -271,6 +271,7 @@ Trajet* insertPliste(Trajet* pliste, EtapeAVL* nouvelle_etape) {
 // Fonction pour insérer un nouveau noeud dans l'arbre AVL
 EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
+    printf("action\n");
     if (root == NULL) {
         return nouvelle_etape;
     }
@@ -318,17 +319,95 @@ EtapeAVL *insertAVLFromList_Baptiste(Trajet *pliste, EtapeAVL *arbre) {
     }
     return arbre;
 }
+EtapeAVL *rechercherPlusPetit(EtapeAVL *racine) {
+    // Parcours vers le plus à gauche
+    while (racine != NULL && racine->gauche != NULL) {
+        racine = racine->gauche;
+    }
+    return racine;
+}
+
+EtapeAVL *mettreAJourHauteurEquilibre(EtapeAVL *racine) {
+    if (racine == NULL) {
+        return NULL;
+    }
+
+    // Mettre à jour la hauteur du nœud actuel
+    racine->hauteur = 1 + max(height(racine->gauche), height(racine->droite));
+
+    // Calculer le facteur d'équilibre
+    int balance = getBalance(racine);
+
+    // Cas de déséquilibre à gauche
+    if (balance > 1) {
+        if (getBalance(racine->gauche) >= 0) {
+            // Cas de la rotation simple à droite
+            return rotateRight(racine);
+        } else {
+            // Cas de la double rotation gauche-droite
+            racine->gauche = rotateLeft(racine->gauche);
+            return rotateRight(racine);
+        }
+    }
+
+    // Cas de déséquilibre à droite
+    if (balance < -1) {
+        if (getBalance(racine->droite) <= 0) {
+            // Cas de la rotation simple à gauche
+            return rotateLeft(racine);
+        } else {
+            // Cas de la double rotation droite-gauche
+            racine->droite = rotateRight(racine->droite);
+            return rotateLeft(racine);
+        }
+    }
+
+    return racine;
+}
+
+EtapeAVL *supprimerPlusPetit(EtapeAVL *racine) {
+    // Cas de base : arbre vide
+    if (racine == NULL) {
+        return NULL;
+    }
+
+    // Trouver le plus petit nœud (le plus à gauche)
+    if (racine->gauche != NULL) {
+        racine->gauche = supprimerPlusPetit(racine->gauche);
+    } else {
+        // Le plus petit nœud est trouvé, le supprimer
+        EtapeAVL *temp = racine->droite;
+        free(racine);
+        return temp;
+    }
+
+    // Mettre à jour la hauteur et équilibrer l'arbre après la suppression
+    // (Cela dépend de l'implémentation spécifique des fonctions d'équilibrage AVL)
+    // ...
+
+    return racine;
+}
 
 EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
     Trajet *tmp = pliste;
     int compter = 0;
     while (tmp != NULL) {
-        arbre = insertAVLNode(arbre, tmp->noeud);
         if ( compter >= 50){
-            
+            //si la distance max min supérieur au plus petit de l'arbre, on l'intégre
+            if(rechercherPlusPetit(arbre)->distance_max_min < tmp->noeud->distance_max_min){
+                arbre = supprimerPlusPetit(arbre);
+                arbre = mettreAJourHauteurEquilibre(arbre);
+                arbre = insertAVLNode(arbre, tmp->noeud);
+            }
+            //arbre = mettreAJourHauteurEquilibre(arbre);
+        }
+        else{
+            arbre = insertAVLNode(arbre, tmp->noeud);
         }
         compter ++;
+        printf("\n%d",compter);
         tmp = tmp->next;
+        printf("test\n");
     }
     return arbre;
 }
@@ -442,7 +521,7 @@ int main(){
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
-    affichePliste(pliste);
+    //affichePliste(pliste);
     /*/while (tmp != NULL && tmp->next != NULL) {
     arbre = insertAVL(arbre, tmp->noeud);
     tmp = tmp->next;
