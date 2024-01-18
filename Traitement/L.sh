@@ -17,3 +17,4 @@ set boxwidth 0.7
 
 plot '$fichier_resultats' using 1:xtic(2) with boxes lc rgbcolor 'spring-green' notitle
 EOF
+xdg-open Image/histogramme_horizontal_3.png

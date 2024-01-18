@@ -71,19 +71,17 @@ executable2="Progc/prog_s"  # executable du traitement S
 if command -v "$executable1" >/dev/null 2>&1; then
     echo "L'exécutable $executable1 existe."
 else
-    echo "Erreur : Les exécutables $executable1"
-    cd Progc
-    gcc Progc/T.c -o Progc/prog_t
-    cd ..
+    echo "Erreur : L'éxécutable $executable1 n'existe pas"
+    echo "Creation de l'executable $executable1"
+    #gcc Progc/T.c -o Progc/prog_t
 fi
 
 if command -v "$executable2" >/dev/null 2>&1; then
     echo "L'exécutable $executable2 existe."
 else
-    echo "Erreur : Les exécutables $executable2"
-    cd Progc
-    #gcc Progc/T.c -o Progc/prog_s
-    cd ..
+    echo "Erreur : L'exécuatble '$executable2 n'existe pas"
+    echo "Creation de l'executable $executable2"
+    gcc Progc/S.c -o Progc/prog_s
 fi
 
 #vérifier si le dossier Temp existe

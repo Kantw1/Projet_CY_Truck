@@ -7,6 +7,7 @@ Instructions pour utiliser :
 - Avoir Gnuplot
 - Avoir un compilateur pouvant executer du shell et du code c
 - Lire le Makefile en entier
+- Ne pas oublier de faire Make Droit pour obtenir les droits
 - Choisir l'argument voulu
 - Se trouver à la racine du projet
 

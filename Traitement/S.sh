@@ -23,4 +23,5 @@ set xtics rotate by 45 offset -3,-1.5
 plot '$fichier_resultats2' using 0:(\$2):(\$4) with filledcurve lc rgbcolor 'spring-green' title "Distance Max/Min (Km)",\
     ''using 3:xtic(1) smooth mcspline lc rgbcolor 'dark-green' title "Distance average (Km)"
 EOF
-#using ytic(2) with filledcurve lc rgbcolor 'blue' title "Shaded error region"
+
+xdg-open Image/histogramme_horizontal_5.png
