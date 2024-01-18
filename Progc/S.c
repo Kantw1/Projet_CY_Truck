@@ -405,9 +405,7 @@ EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
             arbre = insertAVLNode(arbre, tmp->noeud);
         }
         compter ++;
-        printf("\n%d",compter);
         tmp = tmp->next;
-        printf("test\n");
     }
     return arbre;
 }

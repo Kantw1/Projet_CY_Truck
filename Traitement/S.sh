@@ -4,9 +4,9 @@ fichier_trajets="Data/data.csv"
 fichier_resultats2="Temp/Resultat_s2.txt"
 fichier_resultats="Temp/Resultat_s.txt"
 
-cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n | sed 's/;/ /g'> $fichier_resultats
-./Progc/prog_s
-# Lancer le fichier .c
+#cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n | sed 's/;/ /g'> $fichier_resultats
+#./Progc/prog_s
+#sed -i '1d' $fichier_resultats2
 
 
 # Utilisation de gnuplot
@@ -20,7 +20,7 @@ set ylabel 'DISTANCE (km)'
 set yrange [0:1000]
 set xtics rotate by 45 offset -3,-1.5
 
-# Utilisez le bon nom de fichier 'Data/data_s.txt'
-plot '$fichier_resultats_test' using 3:xtic(1) smooth mcspline lc rgbcolor 'spring-green' title "Distance average (Km)
+plot '$fichier_resultats2' using 0:(\$2):(\$4) with filledcurve lc rgbcolor 'spring-green' title "Distance Max/Min (Km)",\
+    ''using 3:xtic(1) smooth mcspline lc rgbcolor 'dark-green' title "Distance average (Km)"
 EOF
 #using ytic(2) with filledcurve lc rgbcolor 'blue' title "Shaded error region"
