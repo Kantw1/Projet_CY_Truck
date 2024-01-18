@@ -125,8 +125,8 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
     return root;
 }
 
-/*
-Trajet *insertPliste_Baptiste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
+
+/*Trajet *insertPliste1(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
         perror("Erreur d'allocation mémoire");
@@ -152,8 +152,8 @@ Trajet *insertPliste_Baptiste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
 
     tmp->next = newNode;
     return pliste;
-}
-*/
+}*/
+
 Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
@@ -172,7 +172,7 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
 
     Trajet *tmp = pliste;
         if (tmp->end->noeud->id_trajet == nouvelle_etape->id_trajet) {
-            tmp = modifierTrajet(tmp, nouvelle_etape);
+            tmp = modifierTrajet(tmp->end, nouvelle_etape);
             free(newNode); // Libérer le nœud nouvellement alloué car il n'est pas nécessaire
             return pliste; // Pas besoin d'ajouter un nouveau nœud à la liste
     }
@@ -310,10 +310,24 @@ EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
 }
 
 // Fonction pour insérer tous les noeuds de la liste dans l'arbre AVL
-EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
+EtapeAVL *insertAVLFromList_Baptiste(Trajet *pliste, EtapeAVL *arbre) {
     Trajet *tmp = pliste;
     while (tmp != NULL) {
         arbre = insertAVLNode(arbre, tmp->noeud);
+        tmp = tmp->next;
+    }
+    return arbre;
+}
+
+EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
+    Trajet *tmp = pliste;
+    int compter = 0;
+    while (tmp != NULL) {
+        arbre = insertAVLNode(arbre, tmp->noeud);
+        if ( compter >= 50){
+            
+        }
+        compter ++;
         tmp = tmp->next;
     }
     return arbre;
@@ -428,14 +442,14 @@ int main(){
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
-    /*affichePliste(pliste);*/
+    affichePliste(pliste);
     /*/while (tmp != NULL && tmp->next != NULL) {
     arbre = insertAVL(arbre, tmp->noeud);
     tmp = tmp->next;
     } /*/
     arbre = insertAVLFromList(pliste, arbre);
     printf("Contenu de l'arbre \n");
-    /*parcourirEtAfficherAVLDecroissant(arbre);*/
+    parcourirEtAfficherAVLDecroissant(arbre);
     pliste=NULL;
     processStats(arbre);
     fclose(fichier);
