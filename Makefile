@@ -1,15 +1,10 @@
 Droit :
 	chmod 777 Script.sh
-	chmod 777 D1.sh
-	chmod 777 D2.sh
-	chmod 777 L.sh
-	chmod 777 S.sh
-	chmod 777 T.sh
-	chmod 777 Image/histogramme_horizontal.png
-	chmod 777 Image/histogramme_horizontal_2.png
-	chmod 777 Image/histogramme_horizontal_3.png
-	chmod 777 Image/histogramme_horizontal_5.png
-	chmod 777 Image/histogramme_horizontal_5.png
+	chmod 777 Traitement/D1.sh
+	chmod 777 Traitement/D2.sh
+	chmod 777 Traitement/L.sh
+	chmod 777 Traitement/S.sh
+	chmod 777 Traitement/T.sh
 
 Clean :
 	rm -f Temp/*

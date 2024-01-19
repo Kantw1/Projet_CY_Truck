@@ -5,58 +5,6 @@ chmod 777 Traitement/D1.sh Traitement/D2.sh Traitement/T.sh Progc/T.c Progc/S.c
 
 fichier1="Data/data.csv"
 
-# Fonction pour afficher l'aide
-afficher_aide() {
-    echo "  -h, : En lancant ce programme vous avez le choix entre différents arguments 
-    liés à différents traitements :
-    - Le traitement D1 permet de voir les conducteurs avec le plus de trajet
-    - Le traitement D2 permet de voir les conducteurs et la plus grande distance
-    - Le traitement T permet de voir les 10 trajets les plus longs
-    - Le traitement S permet de voir les 10 villes les plus traversées
-    - Le traitement L permet de voir les statistiques sur les étapes
-    "
-}
-
-# Fonction pour le traitement D1
-traitement_D1() {
-    echo "Traitement D1"
-    #lancer les verif et le traitement demandé
-    verifier_tout;
-    ./Traitement/D1.sh
-}
-
-# Fonction pour le traitement D2
-traitement_D2() {
-    echo "Traitement D2"
-    # lancer les verif et le traitement demandé
-    verifier_tout;
-    ./Traitement/D2.sh
-}
-
-# Fonction pour le traitement L
-traitement_L() {
-    echo "Traitement L"
-    # lancer les verif et le traitement demandé
-    verifier_tout;
-    ./Traitement/L.sh
-}
-
-# Fonction pour le traitement T
-traitement_T() {
-    echo "Traitement T"
-    # lancer les verif et le traitement demandé
-    verifier_tout;
-    ./Progc/prog_t t Data/data.csv
-}
-
-# Fonction pour le traitement S
-traitement_S() {
-    echo "Traitement S"
-    # lancer les verif et le traitement demandé
-    verifier_tout;
-    ./Traitement/S.sh
-}
-
 #fonction de vérification
 verifier_tout() {
 # Vérifier l'existence du fichier
@@ -98,6 +46,58 @@ if [ ! -d "Image" ]; then
 fi
 
 }
+
+verifier_tout;
+
+# Fonction pour afficher l'aide
+afficher_aide() {
+    echo "  -h, : En lancant ce programme vous avez le choix entre différents arguments 
+    liés à différents traitements :
+    - Le traitement D1 permet de voir les conducteurs avec le plus de trajet
+    - Le traitement D2 permet de voir les conducteurs et la plus grande distance
+    - Le traitement T permet de voir les 10 trajets les plus longs
+    - Le traitement S permet de voir les 10 villes les plus traversées
+    - Le traitement L permet de voir les statistiques sur les étapes
+    "
+}
+
+
+
+# Fonction pour le traitement D1
+traitement_D1() {
+    echo "Traitement D1"
+    #lancer les verif et le traitement demandé
+    ./Traitement/D1.sh
+}
+
+# Fonction pour le traitement D2
+traitement_D2() {
+    echo "Traitement D2"
+    # lancer les verif et le traitement demandé
+    ./Traitement/D2.sh
+}
+
+# Fonction pour le traitement L
+traitement_L() {
+    echo "Traitement L"
+    # lancer les verif et le traitement demandé
+    ./Traitement/L.sh
+}
+
+# Fonction pour le traitement T
+traitement_T() {
+    echo "Traitement T"
+    # lancer les verif et le traitement demandé
+    ./Traitement/T.sh
+}
+
+# Fonction pour le traitement S
+traitement_S() {
+    echo "Traitement S"
+    # lancer les verif et le traitement demandé
+    ./Traitement/S.sh
+}
+
 
 # Mesurer le temps de début
 start_time=$(date +%s)
