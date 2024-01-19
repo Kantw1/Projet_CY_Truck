@@ -4,9 +4,9 @@ fichier_trajets="Data/data.csv"
 fichier_resultats2="Temp/Resultat_s2.txt"
 fichier_resultats="Temp/Resultat_s.txt"
 
-#cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n | sed 's/;/ /g'> $fichier_resultats
-#./Progc/prog_s
-#sed -i '1d' $fichier_resultats2
+cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n | sed 's/;/ /g'> $fichier_resultats
+./Progc/prog_s
+sed -i '1d' $fichier_resultats2
 
 
 # Utilisation de gnuplot
