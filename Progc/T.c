@@ -452,11 +452,11 @@ int main(){
     int compteur = 0;
     VilleAVL *nouvelle_etape = NULL;
       while (fscanf(fichier, "%49[^;];%49[^\n]\n", ville, nom) == 2 ){ 
-        printf("Ville: %s, Nom : %s\n", ville, nom);
+        //printf("Ville: %s, Nom : %s\n", ville, nom);
         nouvelle_etape = newVilleAVL(ville,nom);
     	pliste = insertPliste(pliste, nouvelle_etape);
         compteur ++;
-        printf("%d\n",compteur);
+        //printf("%d\n",compteur);
       }
     arbre = insertAVLFromList(pliste, arbre);
     pliste=NULL;
