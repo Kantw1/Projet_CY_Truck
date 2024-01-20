@@ -4,7 +4,16 @@ fichier_resultats2="Temp/resultat_T2.txt"
 fichier_resultats_test="Data/data_t.txt"
 
 cut -d';' -f3,4,6 "$fichier_trajets" | tail -n +2 > $fichier_resultats #head -n 6000 à enlever
-awk -F';' '{for(i=1;i<=NF-1;i++) print $i FS $NF}' $fichier_resultats | sort -t';' -k1,1 > $fichier_resultats2
+awk -F';' '{
+  if ($1 == $2) {
+    # Si les colonnes 1 et 2 sont identiques, supprimer la colonne 2
+    print $1 FS $3
+  } else {
+    # Sinon, appliquer la commande awk pour supprimer la dernière colonne et trier
+    for (i=1; i<=NF-1; i++) print $i FS $NF
+  }
+}' $fichier_resultats | sort -t';' -k1,1 > $fichier_resultats2
+#awk -F';' '{for(i=1;i<=NF-1;i++) print $i FS $NF}' $fichier_resultats | sort -t';' -k1,1 > $fichier_resultats2
 #sed -i 's/$/;/g' $fichier_resultats2
 ./Progc/prog_t
 
