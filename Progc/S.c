@@ -3,6 +3,15 @@
 #include <string.h>
 #include<stdbool.h>
 
+/*/
+Fonctionnement de la fonction S.c :
+->Récupération des données du texte 
+-> Tri par trajet dans une liste chainée (pliste ici) 
+-> Tri dans un AVL par "distance_max-distance_min" (arbre ici)
+-> Ecriture des 50 plus grands trajets "distance_max-distance_min" triés par ID_Trajet dans le texte de sortie
+/*/
+
+//Création structure EtapeAVL permettant le tri des données de la liste chainée pliste permettant le 1er tri des données
 typedef struct EtapeAVL {
 int id_trajet;
 double distance;
@@ -16,19 +25,19 @@ struct EtapeAVL *gauche;
 struct EtapeAVL *droite;
 } EtapeAVL;
 
-
+//Création structure Trajet permettant le tri des données par ID_Trajet
 typedef struct Trajet {
  	EtapeAVL* noeud;
  	struct Trajet* next;
     struct Trajet *end;
 } Trajet;
 
-// fonction usuelle pour avoir le max entre deux données
+// fonction pour avoir le max entre deux données
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
-// fonction pour calculer hauteur d'un arbre
+// fonction pour calculer la hauteur d'un arbre
 int height(EtapeAVL *node) {
     if (node == NULL) {
         return 0; // La hauteur d'un noeud vide est 0
@@ -72,7 +81,7 @@ EtapeAVL *rotateLeft(EtapeAVL *x) {
     return y;
 }
 
-// l'AVL est-il equilibre
+// vérification de si l'AVL est équilibré.
 int getBalance(EtapeAVL *node) {
     if (node == NULL) {
         return 0; // Le facteur d'equilibre d'un noeud vide est 0
@@ -81,13 +90,14 @@ int getBalance(EtapeAVL *node) {
     }
 }
 
-// creation d'un nouveau noeud
+// création d'un nouveau noeud
 EtapeAVL *newEtapeAVL(int id_trajet,double distance) {
     EtapeAVL *node = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     if (node == NULL) {
         perror("Erreur d'allocation memoire");
         exit(EXIT_FAILURE);
     }
+    //Insertion des données
     node->distance=distance;
     node->distance_max=distance;
     node->distance_min=distance;
@@ -101,7 +111,7 @@ EtapeAVL *newEtapeAVL(int id_trajet,double distance) {
     return node;
 }
 
-// modification du noeud 
+// fonction permettant la modification du chainon trajet en ajoutant l'étape au chainon ID_Trajet similaire
 Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
     if (root == NULL || root->noeud == NULL) {
         // Gérer le cas où root ou root->noeud est NULL
@@ -110,6 +120,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
 
     root->noeud->distance += nouvelle_etape->distance;
 
+    // Mise à jour de distance_max du trajet si l'étape à une distance plus élevé que celle actuelle du trajet
     if (root->noeud->distance_max < nouvelle_etape->distance) {
         root->noeud->distance_max = nouvelle_etape->distance;
     }
@@ -118,6 +129,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
         root->noeud->distance_min = nouvelle_etape->distance;
     }
 
+    //  Mise à jour de distance_min du trajet si l'étape à une distance plus petite que celle actuelle du trajet
     root->noeud->distance_max_min = root->noeud->distance_max - root->noeud->distance_min;
     root->noeud->nombre_etapes += 1;
     root->noeud->distance_moyenne = root->noeud->distance / root->noeud->nombre_etapes;
@@ -126,7 +138,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
 }
 
 
-
+// fonction permettant l'insertion de l'étape dans la liste chainée, soit création du chainon si ID_Trajet n'est pas présent sinon modification du Trajet
 Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
@@ -137,7 +149,7 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     newNode->next = NULL;
 
     if (pliste == NULL) {
-        // Si la liste est vide, le nouveau nœud devient la tête de la liste
+        // Si la liste est vide, le nouveau noeud devient la tête de la liste
         Trajet * inter = newNode;
         inter->end = newNode;
         return inter;
@@ -154,18 +166,6 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     tmp->end = tmp->end->next;
     return pliste;
 }
-
-
-void affichePliste(Trajet* pliste) {
-    Trajet* tmp = pliste;
-
-    printf("Contenu de la liste :\n");
-    while (tmp != NULL) {
-        printf("ID_trajet : %d, Distance : %.3lf\n, Distance_max_min : %.3lf\n", tmp->noeud->id_trajet, tmp->noeud->distance, tmp->noeud->distance_max_min);
-        tmp = tmp->next;
-    }
-}
-    
 
 // Fonction pour insérer un nouveau noeud dans l'arbre AVL
 EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
@@ -207,6 +207,7 @@ EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
 
     return root;
 }
+
 EtapeAVL *rechercherPlusPetit(EtapeAVL *racine) {
     // Parcours vers le plus à gauche
     while (racine != NULL && racine->gauche != NULL) {
@@ -297,33 +298,6 @@ EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
     }
     return arbre;
 }
-
-void parcourirEtAfficherAVL(EtapeAVL* root) {
-    if (root != NULL) {
-        // Parcourir le sous-arbre gauche
-        parcourirEtAfficherAVL(root->gauche);
-
-        // Afficher les informations du noeud courant
-        printf("ID_trajet : %d, Distance : %.3lf\n", root->id_trajet, root->distance);
-
-        // Parcourir le sous-arbre droit
-        parcourirEtAfficherAVL(root->droite);
-    }
-}
-
-void parcourirEtAfficherAVLDecroissant(EtapeAVL* root) {
-    if (root != NULL) {
-        // Parcourir le sous-arbre droit en premier (parcours décroissant)
-        parcourirEtAfficherAVLDecroissant(root->droite);
-
-        // Afficher les informations du noeud courant
-        printf("ID_trajet : %d, Distance : %.3lf, Distance_max_min : %.3lf\n", root->id_trajet, root->distance, root->distance_max_min);
-
-        // Parcourir le sous-arbre gauche
-        parcourirEtAfficherAVLDecroissant(root->gauche);
-    }
-}
-
 
 // Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
 void fillSortedDataDecreasing(struct EtapeAVL* node, struct EtapeAVL* sortedData[50], int* currentIndex) {
