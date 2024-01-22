@@ -5,7 +5,7 @@ fichier_resultats="Temp/resultat_2.txt"
 # Tri des données utilisant awk pour additionner les distances faites par routier, et renvoie des 10 plus grandes distances par routier effectuées
 awk -F ';' '{ distances[$6] += $5 } END { for (driver in distances) print distances[driver], driver }' $fichier_trajets | sort -k1,1nr | head -n 10 | sort -k1,1n > $fichier_resultats
 
-# Utilisation de gnuplot
+# Utilisation de gnuplot pour la création du graphe
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 700, 600
 set output 'Image/histogramme_horizontal_2.png'
