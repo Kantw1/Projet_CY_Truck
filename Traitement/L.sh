@@ -4,6 +4,7 @@ fichier_resultats="Temp/resultat_3.txt"
 # Tri effectuant le traitement L, utilisant awk pour faire une somme des distances des id trajets.
 awk -F ';' '{ distances[$1] += $5 } END { for (route_id in distances) print distances[route_id], route_id }' "$fichier_trajets" | sort -k1,1nr | head -n 10 | sort -k2,2nr> "$fichier_resultats"
 
+# Utilisation de gnuplot pour la création du graphe
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 700, 600
 set output 'Image/histogramme_horizontal_3.png'
