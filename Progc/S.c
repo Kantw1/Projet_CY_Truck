@@ -11,7 +11,7 @@ Fonctionnement de la fonction S.c :
 -> Ecriture des 50 plus grands trajets "distance_max-distance_min" triés par ID_Trajet dans le texte de sortie
 /*/
 
-//Création structure EtapeAVL permettant le tri des données de la liste chainée pliste permettant le 1er tri des données
+// Création structure EtapeAVL permettant le tri des données de la liste chainée pliste permettant le 1er tri des données
 typedef struct EtapeAVL {
 int id_trajet;
 double distance;
@@ -25,19 +25,19 @@ struct EtapeAVL *gauche;
 struct EtapeAVL *droite;
 } EtapeAVL;
 
-//Création structure Trajet permettant le tri des données par ID_Trajet
+// Création structure Trajet permettant le tri des données par ID_Trajet
 typedef struct Trajet {
  	EtapeAVL* noeud;
  	struct Trajet* next;
     struct Trajet *end;
 } Trajet;
 
-// fonction pour avoir le max entre deux données
+// Fonction pour avoir le max entre deux données
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
 
-// fonction pour calculer la hauteur d'un arbre
+// Fonction pour calculer la hauteur d'un arbre
 int height(EtapeAVL *node) {
     if (node == NULL) {
         return 0; // La hauteur d'un noeud vide est 0
@@ -49,7 +49,7 @@ int height(EtapeAVL *node) {
     }
 }
 
-// rotation droite de l'AVL
+// Fonction permettant la rotation droite de l'AVL
 EtapeAVL *rotateRight(EtapeAVL *y) {
     EtapeAVL *x = y->gauche;
     EtapeAVL *T2 = x->droite;
@@ -65,7 +65,7 @@ EtapeAVL *rotateRight(EtapeAVL *y) {
     return x;
 }
 
-// rotation gauche de l'AVL
+// Fonction permettant la rotation gauche de l'AVL
 EtapeAVL *rotateLeft(EtapeAVL *x) {
     EtapeAVL *y = x->droite;
     EtapeAVL *T2 = y->gauche;
@@ -81,7 +81,7 @@ EtapeAVL *rotateLeft(EtapeAVL *x) {
     return y;
 }
 
-// vérification de si l'AVL est équilibré.
+// Vérification de si l'AVL est équilibré.
 int getBalance(EtapeAVL *node) {
     if (node == NULL) {
         return 0; // Le facteur d'equilibre d'un noeud vide est 0
@@ -90,7 +90,7 @@ int getBalance(EtapeAVL *node) {
     }
 }
 
-// création d'un nouveau noeud
+// Fonction permettant la création d'un nouveau noeud
 EtapeAVL *newEtapeAVL(int id_trajet,double distance) {
     EtapeAVL *node = (EtapeAVL *)malloc(sizeof(EtapeAVL));
     if (node == NULL) {
@@ -111,7 +111,7 @@ EtapeAVL *newEtapeAVL(int id_trajet,double distance) {
     return node;
 }
 
-// fonction permettant la modification du chainon trajet en ajoutant l'étape au chainon ID_Trajet similaire
+// Fonction permettant la modification du chainon trajet en ajoutant l'étape au chainon ID_Trajet similaire
 Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
     if (root == NULL || root->noeud == NULL) {
         // Gérer le cas où root ou root->noeud est NULL
@@ -138,7 +138,7 @@ Trajet* modifierTrajet(Trajet* root, EtapeAVL* nouvelle_etape) {
 }
 
 
-// fonction permettant l'insertion de l'étape dans la liste chainée, soit création du chainon si ID_Trajet n'est pas présent sinon modification du Trajet
+// Fonction permettant l'insertion de l'étape dans la liste chainée, soit création du chainon si ID_Trajet n'est pas présent sinon modification du trajet
 Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
     if (newNode == NULL) {
@@ -156,12 +156,13 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     }
 
     Trajet *tmp = pliste;
+    // Insertion de l'étape dans le chainon trajet actuelle si même ID_Trajet
         if (tmp->end->noeud->id_trajet == nouvelle_etape->id_trajet) {
             tmp = modifierTrajet(tmp->end, nouvelle_etape);
-            free(newNode); // Libérer le nœud nouvellement alloué car il n'est pas nécessaire
-            return pliste; // Pas besoin d'ajouter un nouveau nœud à la liste
+            free(newNode); // Libérer le noeud nouvellement alloué car il n'est pas nécessaire
+            return pliste; // Pas besoin d'ajouter un nouveau noeud à la liste
     }
-
+    // Si condition If pas respectée, le pointeur ajoute l'étape en créant un chainon suivant, qui regroupera tout les ID_Trajet similaires si une des futures étapes ajoutées à le même ID_Trajet
     tmp->end->next = newNode;
     tmp->end = tmp->end->next;
     return pliste;
