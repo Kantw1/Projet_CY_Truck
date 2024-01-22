@@ -1,9 +1,9 @@
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat_3.txt"
 
+# Tri effectuant le traitement L, utilisant awk pour faire une somme des distances des id trajets.
 awk -F ';' '{ distances[$1] += $5 } END { for (route_id in distances) print distances[route_id], route_id }' "$fichier_trajets" | sort -k1,1nr | head -n 10 | sort -k2,2nr> "$fichier_resultats"
-#max_value=$(awk -F' ' 'NR==1 {max=$1} $1>max {max=$1} END {print max}' "$fichier_resultats")
-#max_value2=$(awk 'BEGIN {rounded = int((ENVIRON["max_value"] + 999) / 1000) * 1000; printf "%.0f\n", rounded}')
+
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 700, 600
 set output 'Image/histogramme_horizontal_3.png'
