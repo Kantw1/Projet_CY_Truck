@@ -23,6 +23,6 @@ set bmargin 3
 plot '$fichier_resultats2' using 0:(\$2):(\$4) with filledcurve lc rgbcolor 'spring-green' title "Distance Max/Min (Km)",\
     ''using 3:xtic(1) smooth mcspline lc rgbcolor 'dark-green' title "Distance average (Km)"
 EOF
-
+# Utilisation de chmod pour donner les droits absolues à l'accès au graphe de sortie en png
 chmod 777 Image/histogramme_horizontal_5.png
 xdg-open Image/histogramme_horizontal_5.png
