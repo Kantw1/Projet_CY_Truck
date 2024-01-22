@@ -18,5 +18,6 @@ set boxwidth 0.7
 
 plot '$fichier_resultats' using 1:xtic(2) with boxes lc rgbcolor 'spring-green' notitle
 EOF
+# Utilisation de chmod pour donner les droits absolues à l'accès au graphe de sortie en png
 chmod 777 Image/histogramme_horizontal_3.png
 xdg-open Image/histogramme_horizontal_3.png
