@@ -17,5 +17,6 @@ set yrange [-1:10]
 
 plot '$fichier_resultats' using (\$1*0.5):0:(\$1*0.5):(0.4):yticlabels(sprintf("%s %s", stringcolumn(2), stringcolumn(3))) with boxxyerrorbars lc rgbcolor 'spring-green' notitle
 EOF
+# Utilisation de chmod pour donner les droits absolues à l'accès au graphe de sortie en png
 chmod 777 Image/histogramme_horizontal_2.png
 xdg-open Image/histogramme_horizontal_2.png
