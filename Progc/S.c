@@ -168,25 +168,28 @@ Trajet *insertPliste(Trajet *pliste, EtapeAVL *nouvelle_etape) {
     return pliste;
 }
 
-// Fonction pour insérer un nouveau noeud dans l'arbre AVL
+// Fonction pour insérer un nouveau noeud dans l'arbre AVL, trié par "distance_max-distance_min"
 EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
-    // Effectuer l'insertion de manière normale
+    // Rajoute le noeud au noeud actuel si noeud actuel est vide
     if (root == NULL) {
         return nouvelle_etape;
     }
+    // Compare les "distance_max-distance_min" et ajoute dans le sous-arbre gauche si condition respectée
     if (nouvelle_etape->distance_max_min < root->distance_max_min) {
         root->gauche = insertAVLNode(root->gauche, nouvelle_etape);
-    } else if (nouvelle_etape->distance_max_min >= root->distance_max_min) {
+    } 
+    // Compare les "distance_max-distance_min" et ajoute dans le sous-arbre droit si condition respectée
+    else if (nouvelle_etape->distance_max_min >= root->distance_max_min) {
         root->droite = insertAVLNode(root->droite, nouvelle_etape);
     }
 
-    // Mettre à jour la hauteur du noeud actuel
+    // Mise à jour la hauteur du noeud actuel
     root->hauteur = 1 + max(height(root->gauche), height(root->droite));
 
-    // Obtenir le facteur d'équilibre du noeud
+    // Obtention du facteur d'équilibre du noeud
     int balance = getBalance(root);
 
-    // Cas de déséquilibre à gauche
+    // Si cas de déséquilibre à gauche, rotation
     if (balance > 1) {
         if (nouvelle_etape->distance_max_min < root->gauche->distance_max_min) {
             return rotateRight(root);
@@ -196,7 +199,7 @@ EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
         }
     }
 
-    // Cas de déséquilibre à droite
+    // Si cas de déséquilibre à droite, rotation
     if (balance < -1) {
         if (nouvelle_etape->distance_max_min >= root->droite->distance_max_min) {
             return rotateLeft(root);
@@ -209,6 +212,7 @@ EtapeAVL *insertAVLNode(EtapeAVL *root, EtapeAVL *nouvelle_etape) {
     return root;
 }
 
+// Fonction recherchant le plus petit noeud à gauche
 EtapeAVL *rechercherPlusPetit(EtapeAVL *racine) {
     // Parcours vers le plus à gauche
     while (racine != NULL && racine->gauche != NULL) {
@@ -222,7 +226,7 @@ EtapeAVL *mettreAJourHauteurEquilibre(EtapeAVL *racine) {
         return NULL;
     }
 
-    // Mettre à jour la hauteur du nœud actuel
+    // Mise à jour de la hauteur du noeud actuel
     racine->hauteur = 1 + max(height(racine->gauche), height(racine->droite));
 
     // Calculer le facteur d'équilibre
@@ -261,7 +265,7 @@ EtapeAVL *supprimerPlusPetit(EtapeAVL *racine) {
         return NULL;
     }
 
-    // Trouver le plus petit nœud (le plus à gauche)
+    // Trouver le plus petit noeud (le plus à gauche)
     if (racine->gauche != NULL) {
         racine->gauche = supprimerPlusPetit(racine->gauche);
     } else {
@@ -271,19 +275,16 @@ EtapeAVL *supprimerPlusPetit(EtapeAVL *racine) {
         return temp;
     }
 
-    // Mettre à jour la hauteur et équilibrer l'arbre après la suppression
-    // (Cela dépend de l'implémentation spécifique des fonctions d'équilibrage AVL)
-    // ...
-
     return racine;
 }
+
 // Fonction pour insérer tous les noeuds de la liste dans l'arbre AVL
 EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
     Trajet *tmp = pliste;
     int compter = 0;
     while (tmp != NULL) {
         if ( compter >= 50){
-            //si la distance max min supérieur au plus petit de l'arbre, on l'intégre
+            // Si la distance max min supérieur au plus petit de l'arbre, on l'intègre
             if(rechercherPlusPetit(arbre)->distance_max_min < tmp->noeud->distance_max_min){
                 arbre = supprimerPlusPetit(arbre);
                 arbre = mettreAJourHauteurEquilibre(arbre);
