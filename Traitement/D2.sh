@@ -1,4 +1,4 @@
-#création de deux fichiers resultats et trajets
+# Création des fichiers nécessaires ! 
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat_2.txt"
 
