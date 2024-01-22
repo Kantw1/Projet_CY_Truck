@@ -5,15 +5,15 @@
 
 typedef struct conducteurAVL {
     int hauteur;
-    char conducteur[50];
+    int ID;
     struct conducteurAVL * gauche;
     struct conducteurAVL * droite;
 }conducteurAVL;
 
 typedef struct VilleAVL {
 int hauteur;
-int nb_conducteurs;
 int nb_passage_ville;
+int nb_passage_ville_depart;
 char ville[50];
 struct conducteurAVL * conducteur;
 struct VilleAVL *gauche;
@@ -44,13 +44,13 @@ int height(conducteurAVL *node) {
     }
 }
 
-conducteurAVL * newconducteurAVL(char nom[]){
+conducteurAVL * newconducteurAVL(int ID){
     conducteurAVL *node = (conducteurAVL *)malloc(sizeof(conducteurAVL));
     if (node == NULL) {
         perror("Erreur d'allocation memoire");
         exit(EXIT_FAILURE);
     }
-    strcpy(node->conducteur, nom);
+    node->ID = ID;
     node->gauche = NULL;
     node->droite = NULL;
     node->hauteur = 1;
@@ -103,9 +103,9 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
     if (root == NULL) {
         return nouvelle_etape;
     }
-    if (strcmp(nouvelle_etape->conducteur, root->conducteur) < 0) {
+    if (nouvelle_etape->ID< root->ID) {
         root->gauche = insertAVLNode(root->gauche, nouvelle_etape);
-    } else if (strcmp(nouvelle_etape->conducteur, root->conducteur) > 0) {
+    } else if (nouvelle_etape->ID > root->ID) {
         root->droite = insertAVLNode(root->droite, nouvelle_etape);
     }
     // Mettre à jour la hauteur du noeud actuel
@@ -115,9 +115,9 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
     int balance = getBalance(root);
     // Cas de déséquilibre à gauche
     if (balance > 1) {
-        if (strcmp(nouvelle_etape->conducteur, root->gauche->conducteur) > 0) {
+        if (nouvelle_etape->ID > root->gauche->ID) {
             return rotateRight(root);
-        } else if (strcmp(nouvelle_etape->conducteur, root->gauche->conducteur) > 0) {
+        } else if (nouvelle_etape->ID < root->gauche->ID){
             root->gauche = rotateLeft(root->gauche);
             return rotateRight(root);
         }
@@ -125,9 +125,9 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
 
     // Cas de déséquilibre à droite
     if (balance < -1) {
-        if (strcmp(nouvelle_etape->conducteur, root->droite->conducteur) > 0){
+        if (nouvelle_etape->ID > root->droite->ID){
             return rotateLeft(root);
-        } else if (strcmp(nouvelle_etape->conducteur, root->droite->conducteur) < 0 ){
+        } else if (nouvelle_etape->ID < root->droite->ID){
             root->droite = rotateRight(root->droite);
             return rotateLeft(root);
         }
@@ -137,32 +137,31 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
 }
 
 
-int conducteurExiste(conducteurAVL *racine, char conducteur[]) {
+int conducteurExiste(conducteurAVL *racine, int ID) {
     if (racine == NULL) {
         return 0; // Le conducteur n'existe pas dans l'AVL
     }
-    int comparaison = strcmp(conducteur, racine->conducteur);
-    if (comparaison == 0) {
+    if (ID == racine->ID) {
         return 1; // Le conducteur existe dans l'AVL
-    } else if (comparaison < 0) {
-        return conducteurExiste(racine->gauche, conducteur);
+    } else if (ID < racine->ID) {
+        return conducteurExiste(racine->gauche, ID);
     } else {
-        return conducteurExiste(racine->droite, conducteur);
+        return conducteurExiste(racine->droite, ID);
     }
 }
 
-VilleAVL *newVilleAVL(char ville[],char nom[]) {
+VilleAVL *newVilleAVL(char ville[],int ID) {
     VilleAVL *node = (VilleAVL *)malloc(sizeof(VilleAVL));
     if (node == NULL) {
         perror("Erreur d'allocation memoire");
         exit(EXIT_FAILURE);
     }
     strcpy(node->ville, ville);
-    conducteurAVL * Newone = newconducteurAVL(nom);
+    conducteurAVL * Newone = newconducteurAVL(ID);
     //vérifier si le conducteur existe déjà ou pas ?
     node->conducteur = Newone;//insertAVLNode(node->conducteur,Newone);
-    node->nb_conducteurs = 1;
     node->nb_passage_ville = 1;
+    node->nb_passage_ville_depart = 0;
     node->gauche = NULL;
     node->droite = NULL;
     node->hauteur = 1;
@@ -174,9 +173,9 @@ Trajet* modifierTrajet(Trajet* root, VilleAVL* nouvelle_etape) {
         // Gérer le cas où root ou root->noeud est NULL
         return root;
     }
-    root->noeud->nb_passage_ville ++;
-    if (conducteurExiste(root->noeud->conducteur,nouvelle_etape->conducteur->conducteur) == 0){
-        root->noeud->nb_conducteurs ++;
+    //root->noeud->nb_passage_ville ++;
+    if (conducteurExiste(root->noeud->conducteur,nouvelle_etape->conducteur->ID) == 0){
+        root->noeud->nb_passage_ville ++;
         root->noeud->conducteur = insertAVLNode(root->noeud->conducteur,nouvelle_etape->conducteur);
     }
 
@@ -424,9 +423,9 @@ void processStats(struct VilleAVL* root) {
     fillSortedDataDecreasing(root, sortedData, &currentIndex);
 
     // Afficher les statistiques et générer les données pour le graphique
-    FILE* dataFile = fopen("Temp/Resultat_T3.txt", "w");
+    FILE* dataFile = fopen("Temp/Resultat_T4.txt", "w");
     for (int i = 0; i < currentIndex; ++i) {
-        fprintf(dataFile, "%s;%d;%d\n", sortedData[i]->ville, sortedData[i]->nb_passage_ville, sortedData[i]->nb_conducteurs);
+        fprintf(dataFile, "%s;%d;%d\n", sortedData[i]->ville, sortedData[i]->nb_passage_ville, sortedData[i]->nb_passage_ville_depart);
     }
     fclose(dataFile);
 
@@ -443,7 +442,7 @@ int main(){
         return 1;
     }
     int id_trajet;
-    char nom[50];
+    int ID;
     char ville[50];
     //char ville_B[50];
     VilleAVL *arbre = NULL;
@@ -451,17 +450,29 @@ int main(){
     Trajet *tmp = pliste;
     int compteur = 0;
     VilleAVL *nouvelle_etape = NULL;
-      while (fscanf(fichier, "%49[^;];%49[^\n]\n", ville, nom) == 2 ){ 
+      while (fscanf(fichier, "%49[^;];%49[^\n]\n", ID, ville) == 2 ){ 
         //printf("Ville: %s, Nom : %s\n", ville, nom);
-        nouvelle_etape = newVilleAVL(ville,nom);
+        nouvelle_etape = newVilleAVL(ville,ID);
     	pliste = insertPliste(pliste, nouvelle_etape);
         compteur ++;
         //printf("%d\n",compteur);
       }
     arbre = insertAVLFromList(pliste, arbre);
+    FILE *fichier2 = fopen("Temp/resultat_T3.txt", "r");
+    //FILE *fichier2 = fopen("Temp/resultat_T2.txt", "r");
+    if (fichier2 == NULL) {
+    	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
+        return 1;
+    }
+    while (fscanf(fichier, "%49[^;];%49[^\n]\n", ID, ville) == 2 ){ 
+        //printf("Ville: %s, Nom : %s\n", ville, nom);
+        compteur ++;
+        //printf("%d\n",compteur);
+      }
     pliste=NULL;
     processStats(arbre);
     fclose(fichier);
+    fclose(fichier2);
     while (pliste != NULL) {
         Trajet *temp = pliste;
         pliste = pliste->next;
