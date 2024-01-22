@@ -5,6 +5,7 @@ fichier_resultats3="Temp/Resultat_T3.txt"
 fichier_resultats4="Temp/resultat_T4.txt"
 fichier_resultats_test="Data/data_t.txt"
 
+# Mise en place des données utiles dans un 1er fichier, ensuite utiliser dans le T.c plutôt que de prendre le data.csv
 cut -d';' -f3,4,6 "$fichier_trajets" | tail -n +2 > $fichier_resultats #head -n 6000 à enlever
 awk -F';' '{
   if ($1 == $2) {
