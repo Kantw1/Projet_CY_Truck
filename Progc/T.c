@@ -423,7 +423,7 @@ void processStats(struct VilleAVL* root) {
     fillSortedDataDecreasing(root, sortedData, &currentIndex);
 
     // Afficher les statistiques et générer les données pour le graphique
-    FILE* dataFile = fopen("Temp/Resultat_T4.txt", "w");
+    FILE* dataFile = fopen("Temp/Resultat_T3.txt", "w");
     for (int i = 0; i < currentIndex; ++i) {
         fprintf(dataFile, "%s;%d;%d\n", sortedData[i]->ville, sortedData[i]->nb_passage_ville, sortedData[i]->nb_passage_ville_depart);
     }
@@ -433,10 +433,50 @@ void processStats(struct VilleAVL* root) {
     freeSortedData(sortedData, currentIndex);
 }
 
+// Fonction pour libérer tous les nœuds de l'AVL
+void deleteAVL(conducteurAVL *root) {
+    if (root != NULL) {
+        // Parcours en post-ordre
+        deleteAVL(root->gauche);
+        deleteAVL(root->droite);
+
+        // Libérer le nœud courant
+        free(root);
+    }
+}
+
+void parcoursAVL(VilleAVL * ville){
+    if (ville != NULL){
+        printf("supression\n");
+     deleteAVL(ville->conducteur);
+     parcoursAVL(ville->gauche);
+     parcoursAVL(ville->droite);
+    }
+}
+
+void VilleExiste(VilleAVL *racine, char ville[], int ID) {
+    if (racine == NULL) {
+        return; // Le conducteur n'existe pas dans l'AVL
+    }
+    if (strcmp(ville, racine->ville) == 0) {
+        printf("oui\n");
+        if (conducteurExiste(racine->conducteur,ID) == 0){
+            printf("Non\n");
+            racine->nb_passage_ville_depart ++;
+            racine->conducteur = insertAVLNode(racine->conducteur,newconducteurAVL(ID));
+            printf("noui\n");
+        }
+        return; // Le conducteur existe dans l'AVL
+    } else if (strcmp(ville, racine->ville) < 0) {
+        VilleExiste(racine->gauche, ville, ID);
+    } else {
+        VilleExiste(racine->droite, ville,ID);
+    }
+}
+
 
 int main(){
     FILE *fichier = fopen("Temp/resultat_T2.txt", "r");
-    //FILE *fichier2 = fopen("Temp/resultat_T2.txt", "r");
     if (fichier == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
@@ -450,28 +490,28 @@ int main(){
     Trajet *tmp = pliste;
     int compteur = 0;
     VilleAVL *nouvelle_etape = NULL;
-      while (fscanf(fichier, "%49[^;];%49[^\n]\n", ID, ville) == 2 ){ 
-        //printf("Ville: %s, Nom : %s\n", ville, nom);
+      while (fscanf(fichier, "%d;%49[^\n]\n", &ID, ville) == 2 ){ 
+        printf("Ville: %s, ID : %d\n", ville, ID);
         nouvelle_etape = newVilleAVL(ville,ID);
     	pliste = insertPliste(pliste, nouvelle_etape);
         compteur ++;
         //printf("%d\n",compteur);
       }
+    fclose(fichier);
     arbre = insertAVLFromList(pliste, arbre);
-    FILE *fichier2 = fopen("Temp/resultat_T3.txt", "r");
+    FILE *fichier2 = fopen("Temp/resultat_T4.txt", "r");
     //FILE *fichier2 = fopen("Temp/resultat_T2.txt", "r");
     if (fichier2 == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     }
-    while (fscanf(fichier, "%49[^;];%49[^\n]\n", ID, ville) == 2 ){ 
-        //printf("Ville: %s, Nom : %s\n", ville, nom);
-        compteur ++;
-        //printf("%d\n",compteur);
+    parcoursAVL(arbre);
+    while (fscanf(fichier2, "%d;%49[^\n]\n", &ID, ville) == 2 ){
+        printf("Ville: %s, ID : %d\n", ville, ID);
+        VilleExiste(arbre,ville,ID);
       }
     pliste=NULL;
     processStats(arbre);
-    fclose(fichier);
     fclose(fichier2);
     while (pliste != NULL) {
         Trajet *temp = pliste;
