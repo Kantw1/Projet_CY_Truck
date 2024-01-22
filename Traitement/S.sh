@@ -4,14 +4,12 @@ fichier_trajets="Data/data.csv"
 fichier_resultats2="Temp/Resultat_s2.txt"
 fichier_resultats="Temp/Resultat_s.txt"
 
+# Mise en place des données utiles dans un 1er fichier, ensuite utiliser dans le S.c plutôt que prendre le data.csv
 cut -d';' -f1,5 "$fichier_trajets" | tail -n +2  | sort -t';' -k1,1n | sed 's/;/ /g'> $fichier_resultats
 ./Progc/prog_s
 sed -i '1d' $fichier_resultats2
-#max_value=$(awk -F' ' 'NR==1 {max=$4} $4>max {max=$4} END {print max}' "$fichier_resultats2")
-#max_value2=$(awk 'BEGIN {rounded = int((ENVIRON["max_value"] + 99) / 100) * 100; printf "%.0f\n", rounded}')
 
-
-# Utilisation de gnuplot
+# Utilisation de gnuplot pour la création du graphe
 gnuplot -persist <<EOF
 set terminal pngcairo enhanced font 'arial,10' size 1200, 600
 set output 'Image/histogramme_horizontal_5.png'
