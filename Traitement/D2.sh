@@ -13,6 +13,7 @@ set title 'Option -d2 : Distance = f(Driver)'
 set xlabel 'DISTANCE (Km)'
 set ylabel 'DRIVER NAMES'
 set style fill solid
+# Mise en place de la plage de yrange sur 10 en plage maximal
 set yrange [-1:10]
 
 plot '$fichier_resultats' using (\$1*0.5):0:(\$1*0.5):(0.4):yticlabels(sprintf("%s %s", stringcolumn(2), stringcolumn(3))) with boxxyerrorbars lc rgbcolor 'spring-green' notitle
