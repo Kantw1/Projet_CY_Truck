@@ -11,6 +11,7 @@ set title 'Option -l : Distance = f(Route)'
 set ylabel 'DISTANCE (Km)'
 set xlabel 'ROUTE ID'
 set style fill solid
+# La plage maximale de yrange est ici indéfinie, elle ajustera en fonction des données
 set yrange [0:]
 set boxwidth 0.7
 
