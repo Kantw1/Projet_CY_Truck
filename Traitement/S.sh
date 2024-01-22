@@ -15,6 +15,7 @@ set terminal pngcairo enhanced font 'arial,10' size 1200, 600
 set output 'Image/histogramme_horizontal_5.png'
 set title "Option -S : Distance = f(Route)"
 set ylabel 'DISTANCE (km)'
+#la plage maximale de yrange est ici indéfinie, elle ajustera en fonction des données
 set yrange [0:]
 set xtics rotate by 45 right #offset -3,-1.5
 set bmargin 3
