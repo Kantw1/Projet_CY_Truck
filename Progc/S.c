@@ -347,30 +347,37 @@ void processStats(struct EtapeAVL* root) {
 
 
 int main(){
+    // Ouverture du fichier txt crée dans le Script S
     FILE *fichier = fopen("Temp/Resultat_s.txt", "r");
+    // Vérification de la bonne ouverture du fichier, sinon renvoyer erreur
     if (fichier == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     } 
+    // Déclaration des variables nécessaires pour le futur fscanf
     int id_trajet;
     double distance;
     int compteur;
     EtapeAVL *arbre = NULL;
     Trajet *pliste = NULL; // Initialisez votre liste à NULL
     Trajet *tmp = pliste;
+    // Boucle while qui continue tant que le fichier ne renvoie pas une erreur du type EOF 
       while (feof(fichier) != true){ 
       	compteur++;
+	// Récupération de l'ID_trajet et de la distance associée de l'étape et insertion dans la liste chainée
       	fscanf(fichier, "%d", &id_trajet);
       	fscanf(fichier, "%lf", &distance);
-    	//printf("ID_trajet : %d, Distance : %.3lf %d\n", id_trajet, distance,compteur);
     	EtapeAVL *nouvelle_etape = newEtapeAVL(id_trajet, distance);
     	pliste = insertPliste(pliste, nouvelle_etape);
 }
+    // Insertion des chainons de la liste chainée dans l'AVL, chainons triés dans l'AVL par "distance_max-distance_min"
     arbre = insertAVLFromList(pliste, arbre);
-    //parcourirEtAfficherAVLDecroissant(arbre);
     pliste=NULL;
+    // Récupération des 50 plus grandes "distance_max-distance_min" et écriture dans le fichier de sortie
     processStats(arbre);
+    // Fermeture du fichier
     fclose(fichier);
+    // Libération de l'espace mémoire alloué de la liste chainée
     while (pliste != NULL) {
     Trajet *temp = pliste;
     pliste = pliste->next;
