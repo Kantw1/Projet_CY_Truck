@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build T.c",
+            "type": "shell",
+            "command": "gcc",
+            "args": ["-o", "Progc/prog.c"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
