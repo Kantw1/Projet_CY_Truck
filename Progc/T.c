@@ -138,14 +138,19 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
 
 
 int conducteurExiste(conducteurAVL *racine, int ID) {
+    printf("Nana\n");
     if (racine == NULL) {
+        printf("baha\n");
         return 0; // Le conducteur n'existe pas dans l'AVL
     }
     if (ID == racine->ID) {
+        printf("No\n");
         return 1; // Le conducteur existe dans l'AVL
     } else if (ID < racine->ID) {
+        printf("Ni\n");
         return conducteurExiste(racine->gauche, ID);
     } else {
+        printf("Ni\n");
         return conducteurExiste(racine->droite, ID);
     }
 }
@@ -436,6 +441,7 @@ void processStats(struct VilleAVL* root) {
 // Fonction pour libérer tous les nœuds de l'AVL
 void deleteAVL(conducteurAVL *root) {
     if (root != NULL) {
+        printf("%d",root->ID);
         // Parcours en post-ordre
         deleteAVL(root->gauche);
         deleteAVL(root->droite);
@@ -463,6 +469,7 @@ void VilleExiste(VilleAVL *racine, char ville[], int ID) {
         if (conducteurExiste(racine->conducteur,ID) == 0){
             printf("Non\n");
             racine->nb_passage_ville_depart ++;
+            printf("Non non\n");
             racine->conducteur = insertAVLNode(racine->conducteur,newconducteurAVL(ID));
             printf("noui\n");
         }
