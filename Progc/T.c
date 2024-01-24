@@ -124,9 +124,29 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
     //printf("koala\n");
     // Obtenir le facteur d'équilibre du noeud
     int balance = getBalance(root);
+
+    // Rotation gauche
+    if (balance > 1) {
+        if (getBalance(root->gauche) >= 0) {
+            return rotateRight(root);
+        } else {
+            root->gauche = rotateLeft(root->gauche);
+            return rotateRight(root);
+        }
+    }
+
+    // Rotation droite
+    if (balance < -1) {
+        if (getBalance(root->droite) <= 0) {
+            return rotateLeft(root);
+        } else {
+            root->droite = rotateRight(root->droite);
+            return rotateLeft(root);
+        }
+    }
     //printf("tigre\n");
     // Cas de déséquilibre à gauche
-    if (balance > 1) {
+    /*if (balance > 1) {
         //printf("%d\n",nouvelle_etape->ID);
         //printf("%d\n",root->gauche->ID);
         //printf("papi\n");
@@ -150,7 +170,7 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
             root->droite = rotateRight(root->droite);
             return rotateLeft(root);
         }
-    }
+    }*/
 
     return root;
 }
@@ -459,7 +479,7 @@ void processStats(struct VilleAVL* root) {
     // Libération de la mémoire allouée pour chaque élément de sortedData
     freeSortedData(sortedData, currentIndex);
 }
-
+/*
 // Fonction pour libérer tous les nœuds de l'AVL
 void deleteAVL(conducteurAVL *root) {
     if (root != NULL) {
@@ -480,6 +500,30 @@ void parcoursAVL(VilleAVL * ville){
      parcoursAVL(ville->gauche);
      parcoursAVL(ville->droite);
     }
+}*/
+
+VilleAVL *insertAVLNode_Ville_trie(VilleAVL *root, VilleAVL *nouvelle_etape) {
+    // Effectuer l'insertion de manière normale
+    printf("ici\n");
+    if (root == NULL) {
+        printf("test\n");
+        return nouvelle_etape;
+    }
+    if (strcmp(nouvelle_etape->ville,root->ville) < 0) {
+        root->gauche = insertAVLNode_Ville_trie(root->gauche, nouvelle_etape);
+    } else if (strcmp(nouvelle_etape->ville,root->ville) > 0) {
+        root->droite = insertAVLNode_Ville_trie(root->droite, nouvelle_etape);
+    }
+
+    return root;
+}
+
+void trieVille(VilleAVL * root, VilleAVL * nvRoot){
+    if(root != NULL){
+        nvRoot = insertAVLNode_Ville_trie(nvRoot,root);
+        trieVille(root->gauche,nvRoot);
+        trieVille(root->droite,nvRoot);
+    }
 }
 
 void VilleExiste(VilleAVL *racine, char ville[], int ID) {
@@ -487,6 +531,7 @@ void VilleExiste(VilleAVL *racine, char ville[], int ID) {
         //printf("ville existe pas\n");
         return; // Le conducteur n'existe pas dans l'AVL
     }
+    //printf("%s = %s\n", ville, racine->ville);
     if (strcmp(ville, racine->ville) == 0) {
         //printf("oui\n");
         if (conducteurExiste(racine->ID,ID) == 0){
@@ -504,14 +549,6 @@ void VilleExiste(VilleAVL *racine, char ville[], int ID) {
     }
 }
 
-void vereficationVide( VilleAVL * root){
-    if (root !=NULL)
-    if (root->conducteur == NULL){
-        //printf("conducteur vide\n");
-    }
-    vereficationVide(root->gauche);
-    vereficationVide(root->droite);
-}
 
 int main(){
     FILE *fichier = fopen("Temp/resultat_T2.txt", "r");
@@ -537,6 +574,10 @@ int main(){
       }
     fclose(fichier);
     arbre = insertAVLFromList(pliste, arbre);
+    printf("test\n");
+    VilleAVL * Ville_trie = NULL;
+    trieVille(arbre,Ville_trie);
+    printf("info\n");
     FILE *fichier2 = fopen("Temp/resultat_T4.txt", "r");
     //FILE *fichier2 = fopen("Temp/resultat_T2.txt", "r");
     if (fichier2 == NULL) {
