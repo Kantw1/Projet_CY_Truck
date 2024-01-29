@@ -4,7 +4,7 @@
 #include<stdbool.h>
 
 /*/
-Fonctionnement de la fonction S.c :
+Fonctionnement de la programme S.c :
 ->Récupération des données du texte 
 -> Tri par trajet dans une liste chainée (pliste ici) 
 -> Tri dans un AVL par "distance_max-distance_min" (arbre ici)
