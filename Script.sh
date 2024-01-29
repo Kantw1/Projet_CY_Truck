@@ -22,7 +22,7 @@ if command -v "$executable1" >/dev/null 2>&1; then
 else
     echo "Erreur : L'éxécutable $executable1 n'existe pas"
     echo "Creation de l'executable $executable1"
-    #gcc Progc/T.c -o Progc/prog_t
+    gcc Progc/T.c -o Progc/prog_t
 fi
 
 if command -v "$executable2" >/dev/null 2>&1; then
