@@ -225,6 +225,7 @@ Trajet *insertPliste(Trajet *pliste, VilleAVL *nouvelle_etape) {
     }
     
     Trajet *tmp = pliste;
+    //Condition qui vérifie si la dernière ville de la liste est la même que la ville de nouvelle étape,et si c'est le cas, on ajoute nouvelle étape au chainon trajet
         if (strcmp(tmp->end->noeud->ville, nouvelle_etape->ville) == 0) {
             tmp = modifierTrajet(tmp->end, nouvelle_etape);
             free(nouvelle_etape);
@@ -237,6 +238,7 @@ Trajet *insertPliste(Trajet *pliste, VilleAVL *nouvelle_etape) {
     return pliste;
 }
 
+//Fonction qui recherche la ville traversée par le moins de trajet de l'AVL et la return 
 VilleAVL *rechercherPlusPetit(VilleAVL *racine) {
     // Parcours vers le plus à gauche
     while (racine != NULL && racine->gauche != NULL) {
