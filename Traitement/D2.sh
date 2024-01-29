@@ -21,3 +21,6 @@ EOF
 # Utilisation de chmod pour donner les droits absolues à l'accès au graphe de sortie en png
 chmod 777 Image/histogramme_horizontal_2.png
 xdg-open Image/histogramme_horizontal_2.png
+
+# Afficher le répertoire où les images ont été sauvegardées
+echo "Les images ont été sauvegardées dans le répertoire : /Image"
