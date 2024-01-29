@@ -182,10 +182,8 @@ Trajet* modifierTrajet(Trajet* root, VilleAVL* nouvelle_etape) {
         // Gérer le cas où root ou root->noeud est NULL
         return root;
     }
-    //root->noeud->nb_passage_ville ++;
     if (conducteurExiste(root->noeud->conducteur,nouvelle_etape->conducteur->ID) == 0){
         root->noeud->nb_passage_ville ++;
-        //printf("insertion\n");
         root->noeud->conducteur = insertAVLNode(root->noeud->conducteur,nouvelle_etape->conducteur);
     }
 
@@ -388,7 +386,6 @@ VilleAVL *insertAVLFromList(Trajet *pliste, VilleAVL *arbre) {
                 arbre = mettreAJourHauteurEquilibre_Ville(arbre);
                 arbre = insertAVLNode_Ville(arbre, tmp->noeud);
             }
-            //arbre = mettreAJourHauteurEquilibre(arbre);
         }
         else{
             arbre = insertAVLNode_Ville(arbre, tmp->noeud);
@@ -492,7 +489,6 @@ int main(){
     int id_trajet;
     int ID;
     char ville[50];
-    //char ville_B[50];
     VilleAVL *arbre = NULL;
     Trajet *pliste = NULL; // Initialisez votre liste à NULL
     Trajet *tmp = pliste;
@@ -508,13 +504,10 @@ int main(){
     VilleAVL * Ville_trie = NULL;
     trieVille(arbre,Ville_trie);
     FILE *fichier2 = fopen("Temp/resultat_T4.txt", "r");
-    //FILE *fichier2 = fopen("Temp/resultat_T2.txt", "r");
     if (fichier2 == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     }
-    //parcoursAVL(arbre);
-    //vereficationVide(arbre);
     while (fscanf(fichier2, "%d;%49[^\n]\n", &ID, ville) == 2 ){
         VilleExiste(arbre,ville,ID);
       }
