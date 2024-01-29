@@ -4,14 +4,14 @@
 #include<stdbool.h>
 
 /*/
-Fonctionnement de la programme S.c :
+Fonctionnement du programme S.c :
 ->Récupération des données du texte 
 -> Tri par trajet dans une liste chainée (pliste ici) 
 -> Tri dans un AVL par "distance_max-distance_min" (arbre ici)
 -> Ecriture des 50 plus grands trajets "distance_max-distance_min" triés par ID_Trajet dans le texte de sortie
 /*/
 
-// Création structure EtapeAVL permettant le tri des données de la liste chainée pliste permettant le 1er tri des données
+// Création structure EtapeAVL contenant les distances et les statistiques associées permettant le tri des données de la liste chainée pliste permettant le 1er tri des données.
 typedef struct EtapeAVL {
 int id_trajet;
 double distance;
