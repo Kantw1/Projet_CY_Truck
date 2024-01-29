@@ -5,6 +5,10 @@
 
 /*/
 Fonctionnement du programme T.c :
+-> Récupération des données du texte Résultat_2.txt dans une liste chainée
+-> Insertion des données dans un AVL trié par rapport au nombre de villes traversées,et compare si l'ID existe déjà ou non (ville traversée qu'une seule fois pas trajet). Si déja 10 villes dans l'AVL, alors on compare avec le min de l'AVL, et si c'est plus grand on insère la nouvelle valeur dans l'AVL à la place.
+->Récupération des données du texte Résultat_4.txt (texte contenant les villes départs et leur ID), et insertion direct en triant dans l'AVL précédent
+->Ecriture des 10 villes les plus traversées avec leur nombre de départ dans un fichier résultat
 /*/
 //Structure AVL qui contient les ID des trajets
 typedef struct conducteurAVL {
