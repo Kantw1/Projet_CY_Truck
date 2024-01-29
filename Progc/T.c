@@ -10,6 +10,7 @@ Fonctionnement du programme T.c :
 ->Récupération des données du texte Résultat_4.txt (texte contenant les villes départs et leur ID), et insertion direct en triant dans l'AVL précédent
 ->Ecriture des 10 villes les plus traversées avec leur nombre de départ dans un fichier résultat
 /*/
+
 //Structure AVL qui contient les ID des trajets
 typedef struct conducteurAVL {
     int hauteur;
@@ -39,7 +40,7 @@ typedef struct Trajet {
     struct Trajet *end;
 } Trajet;
 
-
+//fonction retournant le max des deux valeurs en paramètres
 int max(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -56,6 +57,7 @@ int height(conducteurAVL *node) {
     }
 }
 
+// Fonction de création du noeud de l'arbre conducteurAVL
 conducteurAVL * newconducteurAVL(int ID){
     conducteurAVL *node = (conducteurAVL *)malloc(sizeof(conducteurAVL));
     if (node == NULL) {
@@ -68,7 +70,8 @@ conducteurAVL * newconducteurAVL(int ID){
     node->hauteur = 1;
     return node;
 }
-// l'AVL est-il equilibre
+
+// Vérification de l'équilibre de l'arbre 
 int getBalance(conducteurAVL *node) {
     if (node == NULL) {
         return 0; // Le facteur d'equilibre d'un noeud vide est 0
@@ -155,7 +158,7 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
     return root;
 }
 
-
+//Fonction vérifiant si l'ID Trajet existe déjà dans l'AVL
 int conducteurExiste(conducteurAVL *racine, int ID) {
     if (racine == NULL) {
         return 0; // Le conducteur n'existe pas dans l'AVL
@@ -169,6 +172,7 @@ int conducteurExiste(conducteurAVL *racine, int ID) {
     }
 }
 
+//Fonction de création du noeud dans l'AVL VilleAVL
 VilleAVL *newVilleAVL(char ville[],int ID) {
     VilleAVL *node = (VilleAVL *)malloc(sizeof(VilleAVL));
     if (node == NULL) {
@@ -188,6 +192,7 @@ VilleAVL *newVilleAVL(char ville[],int ID) {
     return node;
 }
 
+//Fonction modifiant le chainon en augmentant le nombre de passage de 1 et l'insert si l'ID n'existe pas
 Trajet* modifierTrajet(Trajet* root, VilleAVL* nouvelle_etape) {
     if (root == NULL || root->noeud == NULL) {
         // Gérer le cas où root ou root->noeud est NULL
@@ -201,8 +206,10 @@ Trajet* modifierTrajet(Trajet* root, VilleAVL* nouvelle_etape) {
     return root;
 }
 
+//Fonction permettant l'insertion dans la liste chainée du noeud VilleAVL en paramètre dans un chainon
 Trajet *insertPliste(Trajet *pliste, VilleAVL *nouvelle_etape) {
     Trajet *newNode = (Trajet *)malloc(sizeof(Trajet));
+    //Vérification pour éviter la segmentation fault
     if (newNode == NULL) {
         perror("Erreur d'allocation mémoire");
         exit(EXIT_FAILURE);
@@ -211,18 +218,18 @@ Trajet *insertPliste(Trajet *pliste, VilleAVL *nouvelle_etape) {
     newNode->next = NULL;
 
     if (pliste == NULL) {
-        // Si la liste est vide, le nouveau nœud devient la tête de la liste
+        // Si la liste est vide, le nouveau noeud devient la tête de la liste
         Trajet * inter = newNode;
         inter->end = newNode;
         return inter;
     }
-
+    
     Trajet *tmp = pliste;
         if (strcmp(tmp->end->noeud->ville, nouvelle_etape->ville) == 0) {
             tmp = modifierTrajet(tmp->end, nouvelle_etape);
             free(nouvelle_etape);
-            free(newNode); // Libérer le nœud nouvellement alloué car il n'est pas nécessaire
-            return pliste; // Pas besoin d'ajouter un nouveau nœud à la liste
+            free(newNode); // Libérer le noeud nouvellement alloué car il n'est pas nécessaire
+            return pliste; // Pas besoin d'ajouter un nouveau noeud à la liste
     }
 
     tmp->end->next = newNode;
