@@ -3,6 +3,10 @@
 #include <string.h>
 #include<stdbool.h>
 
+/*/
+
+/*/
+//Structure AVL qui contient les ID des trajets
 typedef struct conducteurAVL {
     int hauteur;
     int ID;
@@ -10,6 +14,9 @@ typedef struct conducteurAVL {
     struct conducteurAVL * droite;
 }conducteurAVL;
 
+//Structure AVL qui contient les noms des villes ainsi que le nombre de passage, 
+//le nombre de départ, et contient 2 AVL conducteurAVL, un contient toutes les ID des trajet pour toutes les villes traversées 
+//et un qui contient toutes les ID des trajet pour toutes les villes de départ traversées
 typedef struct VilleAVL {
 int hauteur;
 int nb_passage_ville;
