@@ -4,7 +4,7 @@
 #include<stdbool.h>
 
 /*/
-
+Fonctionnement du programme T.c :
 /*/
 //Structure AVL qui contient les ID des trajets
 typedef struct conducteurAVL {
