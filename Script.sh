@@ -54,10 +54,9 @@ afficher_aide() {
     liés à différents traitements :
     - Le traitement D1 permet de voir les conducteurs avec le plus de trajet
     - Le traitement D2 permet de voir les conducteurs et la plus grande distance
-    - Le traitement T permet de voir les 10 trajets les plus longs
-    - Le traitement S permet de voir les 10 villes les plus traversées
-    - Le traitement L permet de voir les statistiques sur les étapes
-    "
+    - Le traitement L permet de voir les 10 trajets les plus longs
+    - Le traitement T permet de voir les 10 villes les plus traversées
+    - Le traitement S permet de voir les distances minimales, maximales et moyennes des étapes pour 50 trajets"
 }
 
 
