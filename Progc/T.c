@@ -33,7 +33,7 @@ struct VilleAVL *gauche;
 struct VilleAVL *droite;
 } VilleAVL;
 
-
+//Structure Liste chainée qui contient les noeuds VilleAVL 
 typedef struct Trajet {
  	VilleAVL* noeud;
  	struct Trajet* next;
