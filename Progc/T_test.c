@@ -17,7 +17,7 @@ int nb_passage_ville;
 int nb_passage_ville_depart;
 char ville[50];
 struct conducteurAVL * ID;
-struct conducteurAVL * ID_depart;
+//struct conducteurAVL * ID_depart;
 struct VilleAVL *gauche;
 struct VilleAVL *droite;
 } VilleAVL;
@@ -226,37 +226,28 @@ VilleAVL *insertAVLNode_Ville(VilleAVL *root, char ville[],int ID, int info_depa
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
         VilleAVL * nouvelle_etape = newVilleAVL(ville);
-        nouvelle_etape->ID = insertAVLNode(nouvelle_etape->ID_depart, ID);
-        if (info_depart == 0){
-            nouvelle_etape->ID_depart = insertAVLNode(nouvelle_etape->ID_depart, ID);
+        nouvelle_etape->ID = insertAVLNode(nouvelle_etape->ID, ID);
+        if (info_depart == 1){
             nouvelle_etape->nb_passage_ville_depart = 1;
         }
         return nouvelle_etape;
     }
-    else if (strcmp(ville, root->ville) == 0){
+    if (strcmp(ville, root->ville) == 0){
+        if ((info_depart == 1)){
+                    root->nb_passage_ville_depart ++;
+                }
         if (conducteurExiste(root->ID, ID) == 0){
                 root->nb_passage_ville ++;
                 root->ID = insertAVLNode(root->ID, ID);
-
-                if ((info_depart == 0)){
-                    root->ID_depart = insertAVLNode(root->ID_depart, ID);
-                    root->nb_passage_ville_depart ++;
-                }
             }
-        else {
-            if ((info_depart == 0) && (conducteurExiste(root->ID_depart, ID)==0)){
-                    root->ID_depart = insertAVLNode(root->ID_depart, ID);
-                    root->nb_passage_ville_depart ++;
-                }
-        }
         return root;
     }
+
     if (strcmp(ville,root->ville) < 0) {
         root->gauche = insertAVLNode_Ville(root->gauche, ville,ID, info_depart);
     } else if (strcmp(ville,root->ville) > 0) {
         root->droite = insertAVLNode_Ville(root->droite, ville,ID, info_depart);
     }
-
     // Mettre à jour la hauteur du noeud actuel
     root->hauteur = 1 + max(height_Ville(root->gauche), height_Ville(root->droite));
 
@@ -281,29 +272,27 @@ VilleAVL *insertAVLNode_Ville(VilleAVL *root, char ville[],int ID, int info_depa
             root->droite = rotateRight_Ville(root->droite);
             return rotateLeft_Ville(root);
     }
-
-    return root;   
     }
+    return root;   
 }
 
 int main(){
-    FILE *fichier = fopen("Temp/resultat.txt", "r");
+    FILE *fichier = fopen("Temp/resultat_T.txt", "r");
     if (fichier == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     }
-    int id_trajet;
     int ID;
+    int Step_ID;
     char ville_depart[50];
     char ville_arrivee[50];
     VilleAVL *arbre = NULL;
     VilleAVL *nouvelle_etape = NULL;
-    int info_depart;
-      while (fscanf(fichier, "%d;%49[^;];%49[^\n]\n", &ID, ville_depart, ville_arrivee) == 3 ){ 
-        info_depart = 0;
-        arbre = insertAVLNode_Ville(arbre,ville_depart,ID, info_depart);
-        info_depart = 1;
-        arbre = insertAVLNode_Ville(arbre,ville_arrivee,ID, info_depart);
+      while (fscanf(fichier, "%d;%d;%49[^;];%49[^\n]\n", &ID, &Step_ID, ville_depart, ville_arrivee) == 4 ){ 
+        printf("%s : %s\n", ville_depart, ville_arrivee);
+        arbre = insertAVLNode_Ville(arbre,ville_depart,ID, Step_ID);
+        Step_ID = 2;
+        arbre = insertAVLNode_Ville(arbre,ville_arrivee,ID, Step_ID);
       }
     fclose(fichier);
     return 0;
