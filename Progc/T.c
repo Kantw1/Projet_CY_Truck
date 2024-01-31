@@ -470,21 +470,24 @@ void processStats(struct VilleAVL* root) {
     freeSortedData(sortedData, currentIndex);
 }
 
-
+//Fonction triant l'AVL dans l'ordre alphabétique de nom de ville pour l'affichage du graphe
 VilleAVL *insertAVLNode_Ville_trie(VilleAVL *root, VilleAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
     if (root == NULL) {
         return nouvelle_etape;
     }
+    //Comparaison entre le nom de ville du noeud à ajouter et de la racine, insert dans le noeud gauche si la ville du noeud à ajouter à un nom alphabétiquement avant, sinon dans le noeud droit 
     if (strcmp(nouvelle_etape->ville,root->ville) < 0) {
         root->gauche = insertAVLNode_Ville_trie(root->gauche, nouvelle_etape);
-    } else if (strcmp(nouvelle_etape->ville,root->ville) > 0) {
+    } 
+    else if (strcmp(nouvelle_etape->ville,root->ville) > 0) {
         root->droite = insertAVLNode_Ville_trie(root->droite, nouvelle_etape);
     }
 
     return root;
 }
 
+//Parcours et insertion dans un nouveau AVL trié par nom de ville alphabétiquement
 void trieVille(VilleAVL * root, VilleAVL * nvRoot){
     if(root != NULL){
         nvRoot = insertAVLNode_Ville_trie(nvRoot,root);
@@ -493,6 +496,7 @@ void trieVille(VilleAVL * root, VilleAVL * nvRoot){
     }
 }
 
+//Fonction vérifiant si le nom de la ville est déja dans l'AVL 
 void VilleExiste(VilleAVL *racine, char ville[], int ID) {
     if (racine == NULL) {
         return; // Le conducteur n'existe pas dans l'AVL
@@ -503,6 +507,7 @@ void VilleExiste(VilleAVL *racine, char ville[], int ID) {
             racine->ID = insertAVLNode(racine->ID,newconducteurAVL(ID));
         }
         return; // Le conducteur existe dans l'AVL
+    //Vérifie dans le noeud gauche si nom de ville avant dans l'alphabet par rapport au nom de ville de la racine, à droite sinon
     } else if (strcmp(ville, racine->ville) < 0) {
         VilleExiste(racine->gauche, ville, ID);
     } else {
@@ -512,27 +517,38 @@ void VilleExiste(VilleAVL *racine, char ville[], int ID) {
 
 
 int main(){
+    //Ouverture du fichier resultat_T2.txt contenant l'ID Trajet, le nom de la ville de départ et le nom de la ville d'arrivée d'une étape 
     FILE *fichier = fopen("Temp/resultat_T2.txt", "r");
+    //Vérification si le fichier n'est pas NULL après déclaration et renvoie une erreur sinon 
     if (fichier == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
     }
-    int id_trajet;
+    //Déclaration des variables ID et la chaine de caractère ville, accueillant ensuite les valeurs dans le texte (voir fscanf)
     int ID;
     char ville[50];
+    //Déclaration d'un Arbre VilleAVL utilisé plus tard, d'une liste chainée pliste utilisé dans le fscanf, d'un pointeur sur pliste, et de nouvelle_etape un noeud VilleAVL ensuite insérer dans la liste avec les valeurs du texte
     VilleAVL *arbre = NULL;
     Trajet *pliste = NULL; // Initialisez votre liste à NULL
     Trajet *tmp = pliste;
     VilleAVL *nouvelle_etape = NULL;
+    //Boucle parcourant tout le texte de résultat_T2.txt tant qu'il n'y a pas de ligne vide ou avec une seule variable au lieu de 2. 
+    //on crée le noeud nouvelle_étape à partir de l'ID trajet et du nom de la ville d'une ligne du texte récupérer avec fscanf et on l'insert dans la liste chainée
+    //On réitère avec la ligne suivant etc...
       while (fscanf(fichier, "%d;%49[^\n]\n", &ID, ville) == 2 ){ 
         nouvelle_etape = newVilleAVL(ville,ID);
     	pliste = insertPliste(pliste, nouvelle_etape);
       }
+    //Fermeture du fichier 
     fclose(fichier);
+    //On insert dans l'AVL les noeuds contenus dans la liste chainée (voir commentaire insertAVLFromList)
     arbre = insertAVLFromList(pliste, arbre);
+    //On crée un nouveau VilleAVL qui récupère les noeuds du premier AVL arbre,mais cette fois triée par nom de ville alphabétiquement avec la fonction trieVille
     VilleAVL * Ville_trie = NULL;
     trieVille(arbre,Ville_trie);
+    //On ouvre le fichier resultat_T4, contenant l'ID Trajet et la ville de départ
     FILE *fichier2 = fopen("Temp/resultat_T4.txt", "r");
+    //Vérification si le fichier n'est pas null apres declaration, sinon on retourne une erreur. 
     if (fichier2 == NULL) {
     	fprintf(stderr, "Erreur d'ouverture du fichier.\n");
         return 1;
