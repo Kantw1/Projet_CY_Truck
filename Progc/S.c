@@ -220,7 +220,7 @@ EtapeAVL *rechercherPlusPetit(EtapeAVL *racine) {
     }
     return racine;
 }
-
+// Fonction mettant à jour l'équilibre de l'AVL 
 EtapeAVL *mettreAJourHauteurEquilibre(EtapeAVL *racine) {
     if (racine == NULL) {
         return NULL;
@@ -258,7 +258,7 @@ EtapeAVL *mettreAJourHauteurEquilibre(EtapeAVL *racine) {
 
     return racine;
 }
-
+// Fonction supprimant le plus petit noeud de l'AVL
 EtapeAVL *supprimerPlusPetit(EtapeAVL *racine) {
     // Cas de base : arbre vide
     if (racine == NULL) {
@@ -284,13 +284,12 @@ EtapeAVL *insertAVLFromList(Trajet *pliste, EtapeAVL *arbre) {
     int compter = 0;
     while (tmp != NULL) {
         if ( compter >= 50){
-            // Si la distance max min supérieur au plus petit de l'arbre, on l'intègre
+            // Si la distance max min du noeud à ajouter est supérieur à celle du plus petit noeud de l'arbre, on l'ajoute,sinon on ne l'ajoute pas
             if(rechercherPlusPetit(arbre)->distance_max_min < tmp->noeud->distance_max_min){
                 arbre = supprimerPlusPetit(arbre);
                 arbre = mettreAJourHauteurEquilibre(arbre);
                 arbre = insertAVLNode(arbre, tmp->noeud);
             }
-            //arbre = mettreAJourHauteurEquilibre(arbre);
         }
         else{
             arbre = insertAVLNode(arbre, tmp->noeud);
@@ -334,7 +333,7 @@ void processStats(struct EtapeAVL* root) {
     // Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
     fillSortedDataDecreasing(root, sortedData, &currentIndex);
 
-    // Afficher les statistiques et générer les données pour le graphique
+    // Affiche les statistiques et écrit dans un fichier de sortie les 50 ID Trajet avec les plus grands "distance_max-distance_min"
     FILE* dataFile = fopen("Temp/Resultat_s2.txt", "w");
     fprintf(dataFile, "#ID Distance_mini Distance_moyenne Distance_maxi Distance_max-Distance_min\n");
     for (int i = 0; i < currentIndex; ++i) {
