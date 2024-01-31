@@ -140,6 +140,7 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
     if (balance > 1) {
         if (getBalance(root->gauche) >= 0) {
             return rotateRight(root);
+	// Rotation double droite
         } else {
             root->gauche = rotateLeft(root->gauche);
             return rotateRight(root);
@@ -151,6 +152,7 @@ conducteurAVL *insertAVLNode(conducteurAVL *root, conducteurAVL *nouvelle_etape)
         if (getBalance(root->droite) <= 0) {
             return rotateLeft(root);
         } else {
+	//Rotation double gauche 
             root->droite = rotateRight(root->droite);
             return rotateLeft(root);
         }
@@ -198,6 +200,7 @@ Trajet* modifierTrajet(Trajet* root, VilleAVL* nouvelle_etape) {
         // Gérer le cas où root ou root->noeud est NULL
         return root;
     }
+    //l'ID existe déjà ou non ? 
     if (conducteurExiste(root->noeud->conducteur,nouvelle_etape->conducteur->ID) == 0){
         root->noeud->nb_passage_ville ++;
         root->noeud->conducteur = insertAVLNode(root->noeud->conducteur,nouvelle_etape->conducteur);
@@ -247,6 +250,7 @@ VilleAVL *rechercherPlusPetit(VilleAVL *racine) {
     return racine;
 }
 
+//Fonction retournant la hauteur du noeud 
 int height_Ville(VilleAVL *node) {
     if (node == NULL) {
         return 0; // La hauteur d'un noeud vide est 0
@@ -258,6 +262,7 @@ int height_Ville(VilleAVL *node) {
     }
 }
 
+//Fonction qui retourne l'équilibre d'un noeud 
 int getBalance_Ville(VilleAVL *node) {
     if (node == NULL) {
         return 0; // Le facteur d'equilibre d'un noeud vide est 0
@@ -298,12 +303,13 @@ VilleAVL*rotateLeft_Ville(VilleAVL*x) {
     return y;
 }
 
+//Mise à jour de l'équilibre d'un noeud 
 VilleAVL *mettreAJourHauteurEquilibre_Ville(VilleAVL *racine) {
     if (racine == NULL) {
         return NULL;
     }
 
-    // Mettre à jour la hauteur du nœud actuel
+    // Mettre à jour la hauteur du noeud actuel
     racine->hauteur = 1 + max(height_Ville(racine->gauche), height_Ville(racine->droite));
 
     // Calculer le facteur d'équilibre
@@ -377,6 +383,7 @@ VilleAVL *insertAVLNode_Ville(VilleAVL *root, VilleAVL *nouvelle_etape) {
     return root;
 }
 
+//Fonction qui supprime le plus petit noeud de l'AVL
 VilleAVL *supprimerPlusPetit(VilleAVL *racine) {
     // Cas de base : arbre vide
     if (racine == NULL) {
@@ -395,18 +402,21 @@ VilleAVL *supprimerPlusPetit(VilleAVL *racine) {
     return racine;
 }
 
+//Fonction qui insert un noeud stocké dans la liste chainée dans l'AVL, à 10 noeud stockés dans l'AVL, il remplace le plus petit noeud de l'arbre par le noeud en paramètre si le noeud contient une ville qui a plus de nombre de passage 
 VilleAVL *insertAVLFromList(Trajet *pliste, VilleAVL *arbre) {
     Trajet *tmp = pliste;
+    //Compteur jusqu'à 10
     int compter = 0;
     while (tmp != NULL) {
         if ( compter >= 10){
-            //si la distance max min supérieur au plus petit de l'arbre, on l'intégre_depart
+            //Remplace le plus petit noeud par le noeud en paramètre si la ville contenue dans le noeud en paramètre à plus de passage que celle du plus petit noeud
             if(rechercherPlusPetit(arbre)->nb_passage_ville< tmp->noeud->nb_passage_ville){
                 arbre = supprimerPlusPetit(arbre);
                 arbre = mettreAJourHauteurEquilibre_Ville(arbre);
                 arbre = insertAVLNode_Ville(arbre, tmp->noeud);
             }
         }
+	//Passer au prochain noeud sinon 
         else{
             arbre = insertAVLNode_Ville(arbre, tmp->noeud);
         }
@@ -449,7 +459,7 @@ void processStats(struct VilleAVL* root) {
     // Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
     fillSortedDataDecreasing(root, sortedData, &currentIndex);
 
-    // Afficher les statistiques et générer les données pour le graphique
+    // Afficher les statistiques et écrit les 10 noeuds de l'AVL dans un fichier de sortie
     FILE* dataFile = fopen("Temp/Resultat_T3.txt", "w");
     for (int i = 0; i < currentIndex; ++i) {
         fprintf(dataFile, "%s;%d;%d\n", sortedData[i]->ville, sortedData[i]->nb_passage_ville, sortedData[i]->nb_passage_ville_depart);
@@ -459,6 +469,7 @@ void processStats(struct VilleAVL* root) {
     // Libération de la mémoire allouée pour chaque élément de sortedData
     freeSortedData(sortedData, currentIndex);
 }
+
 
 VilleAVL *insertAVLNode_Ville_trie(VilleAVL *root, VilleAVL *nouvelle_etape) {
     // Effectuer l'insertion de manière normale
