@@ -400,7 +400,7 @@ VilleAVL *insertAVLFromList(Trajet *pliste, VilleAVL *arbre) {
     int compter = 0;
     while (tmp != NULL) {
         if ( compter >= 10){
-            //si la distance max min supérieur au plus petit de l'arbre, on l'intégre
+            //si la distance max min supérieur au plus petit de l'arbre, on l'intégre_depart
             if(rechercherPlusPetit(arbre)->nb_passage_ville< tmp->noeud->nb_passage_ville){
                 arbre = supprimerPlusPetit(arbre);
                 arbre = mettreAJourHauteurEquilibre_Ville(arbre);
@@ -512,12 +512,10 @@ int main(){
     VilleAVL *arbre = NULL;
     Trajet *pliste = NULL; // Initialisez votre liste à NULL
     Trajet *tmp = pliste;
-    int compteur = 0;
     VilleAVL *nouvelle_etape = NULL;
       while (fscanf(fichier, "%d;%49[^\n]\n", &ID, ville) == 2 ){ 
         nouvelle_etape = newVilleAVL(ville,ID);
     	pliste = insertPliste(pliste, nouvelle_etape);
-        compteur ++;
       }
     fclose(fichier);
     arbre = insertAVLFromList(pliste, arbre);

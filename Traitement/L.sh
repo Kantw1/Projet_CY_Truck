@@ -1,3 +1,4 @@
+#!/bin/bash
 fichier_trajets="Data/data.csv"
 fichier_resultats="Temp/resultat_3.txt"
 
