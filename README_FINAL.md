@@ -1,6 +1,6 @@
 Instructions pour compiler : 
 - Télécharger l'ensemble des dossiers et des fichiers
-- Télécharger le fichier data.csv et le mettre dans le dossier data
+- Télécharger le fichier data.csv et le mettre dans le dossier data qu'il faudra créer
 - Vérifier que chaque fichier est au bon endroit
 
 Instructions pour utiliser : 
