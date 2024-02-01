@@ -439,33 +439,22 @@ void fillSortedDataDecreasing(struct VilleAVL* node, struct VilleAVL* sortedData
     }
 }
 
-
-
-// Fonction pour libérer la mémoire allouée pour chaque élément de sortedData
-void freeSortedData(struct VilleAVL* sortedData[10], int currentIndex) {
-    for (int i = 0; i < currentIndex; ++i) {
-        free(sortedData[i]);
+void traiter(VilleAVL * root, FILE * dataFile){
+    if (root != NULL){
+        traiter(root->gauche,dataFile);
+        fprintf(dataFile, "%s;%d;%d\n", root->ville, root->nb_passage_ville, root->nb_passage_ville_depart);
+        traiter(root->droite,dataFile);
     }
 }
 
 // Fonction pour traiter les statistiques et générer le fichier de sortie
-void processStats(struct VilleAVL* root) {
-    // Tableau pour stocker les données triées
-    struct VilleAVL* sortedData[10];
-    int currentIndex = 0;
-
-    // Fonction auxiliaire pour parcourir l'arbre et remplir le tableau
-    fillSortedDataDecreasing(root, sortedData, &currentIndex);
+void processStats(struct VilleAVL* root) {   
 
     // Afficher les statistiques et écrit les 10 noeuds de l'AVL dans un fichier de sortie
     FILE* dataFile = fopen("Temp/Resultat_T3.txt", "w");
-    for (int i = 0; i < currentIndex; ++i) {
-        fprintf(dataFile, "%s;%d;%d\n", sortedData[i]->ville, sortedData[i]->nb_passage_ville, sortedData[i]->nb_passage_ville_depart);
-    }
+    traiter(root,dataFile);
+    
     fclose(dataFile);
-
-    // Libération de la mémoire allouée pour chaque élément de sortedData
-    freeSortedData(sortedData, currentIndex);
 }
 
 VilleAVL *newVilleAVL2(char ville[],int passage_ville) {
@@ -519,25 +508,14 @@ void VilleExiste(VilleAVL *racine, char ville[]) {
     if (racine == NULL) {
         return; // La ville n'existe pas dans l'AVL
     }
-    printf("ville : %s , racine ville : %s\n",ville,racine->ville);
     if (strcmp(ville, racine->ville) == 0) {
-        printf("ajout\n");
             racine->nb_passage_ville_depart ++;
-            printf("%d\n",racine->nb_passage_ville_depart);
         return; // Le conducteur existe dans l'AVL
     //Vérifie dans le noeud gauche si nom de ville avant dans l'alphabet par rapport au nom de ville de la racine, à droite sinon
     } else if (strcmp(ville, racine->ville) < 0) {
         VilleExiste(racine->gauche, ville);
     } else {
         VilleExiste(racine->droite, ville);
-    }
-}
-
-void traiter(VilleAVL * root){
-    if (root != NULL){
-        traiter(root->gauche);
-        printf("%s %d\n",root->ville, root->nb_passage_ville_depart);
-        traiter(root->droite);
     }
 }
 
@@ -568,12 +546,10 @@ int main(){
     fclose(fichier);
     //On insert dans l'AVL les noeuds contenus dans la liste chainée (voir commentaire insertAVLFromList)
     arbre = insertAVLFromList(pliste, arbre);
-    traiter(arbre);
     //On crée un nouveau VilleAVL qui récupère les noeuds du premier AVL arbre,mais cette fois triée par nom de ville alphabétiquement avec la fonction trieVille
     VilleAVL * Ville_trie = NULL;
     Ville_trie = trieVille(arbre,Ville_trie);
     printf("\n\n");
-    traiter(Ville_trie);
     //On ouvre le fichier resultat_T4, contenant l'ID Trajet et la ville de départ
     FILE *fichier2 = fopen("Temp/resultat_T4.txt", "r");
     //Vérification si le fichier n'est pas null apres declaration, sinon on retourne une erreur. 
@@ -587,9 +563,8 @@ int main(){
             VilleExiste(Ville_trie,ville);
       }
     }
-    traiter(Ville_trie);
-    pliste=NULL;
-    processStats(arbre);
+    //pliste=NULL;
+    processStats(Ville_trie);
     fclose(fichier2);
     while (pliste != NULL) {
         Trajet *temp = pliste;

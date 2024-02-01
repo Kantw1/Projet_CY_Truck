@@ -4,15 +4,11 @@ fichier_resultats="Temp/resultat_T.txt"
 fichier_resultats2="Temp/resultat_T2.txt"
 fichier_resultats3="Temp/Resultat_T3.txt"
 fichier_resultats4="Temp/resultat_T4.txt"
-fichier_resultats5="Temp/resultat_T5.txt"
-fichier_resultats_test="Data/data_t.txt"
 
-cut -d';' -f1,2,3,4 "$fichier_trajets" | tail -n +2 | head -n 6 > $fichier_resultats #head -n 6000 à enlever
+cut -d';' -f1,2,3,4 "$fichier_trajets" | tail -n +2 > $fichier_resultats
 awk -F';' '{print $1 FS $3; print $1 FS $4}' $fichier_resultats | sort -t';' -k2,2 > $fichier_resultats2
-awk -F';' '{print $2 FS $3}' $fichier_resultats > $fichier_resultats4 #| sort -t';' -k2,2
-#sed -i 's/$/;/g' $fichier_resultats2
+awk -F';' '{print $2 FS $3}' $fichier_resultats > $fichier_resultats4
 ./Progc/prog_t
-sort -t';' -k1,1 "$fichier_resultats3" > $fichier_resultats5
 
 
 gnuplot -persist <<EOF
@@ -30,7 +26,7 @@ set bmargin 5
 set style histogram clustered gap 1
 set style fill solid 0.8 border
 
-plot '$fichier_resultats5' using (\$0):2:xticlabel(1) with boxes lc rgbcolor 'spring-green' notitle,\
+plot '$fichier_resultats3' using (\$0):2:xticlabel(1) with boxes lc rgbcolor 'spring-green' notitle,\
     '' using (\$0+0.2):(\$3) with boxes lc rgbcolor 'dark-green' notitle
 EOF
 

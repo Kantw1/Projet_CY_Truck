@@ -123,4 +123,4 @@ elapsed_time=$((end_time - start_time))
 echo "Le traitement a pris $elapsed_time secondes."
 
 # Message de remerciement à la fin du script
-echo "Merci d'avoir utilisé notre script pour analyser vos données logistiques. Bonne journée #1vs1 sniper!"
+echo -e "Merci d'avoir utilisé notre script pour analyser vos données logistiques. \n \nBonne journée #1vs1 sniper!"

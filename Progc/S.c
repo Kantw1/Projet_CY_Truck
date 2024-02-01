@@ -373,7 +373,6 @@ int main(){
 }
     // Insertion des chainons de la liste chainée dans l'AVL, chainons triés dans l'AVL par "distance_max-distance_min"
     arbre = insertAVLFromList(pliste, arbre);
-    pliste=NULL;
     // Récupération des 50 plus grandes "distance_max-distance_min" et écriture dans le fichier de sortie
     processStats(arbre);
     // Fermeture du fichier
