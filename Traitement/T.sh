@@ -7,7 +7,7 @@ fichier_resultats4="Temp/resultat_T4.txt"
 fichier_resultats5="Temp/resultat_T5.txt"
 fichier_resultats_test="Data/data_t.txt"
 
-cut -d';' -f1,2,3,4 "$fichier_trajets" | tail -n +2 > $fichier_resultats #head -n 6000 à enlever
+cut -d';' -f1,2,3,4 "$fichier_trajets" | tail -n +2 | head -n 6 > $fichier_resultats #head -n 6000 à enlever
 awk -F';' '{print $1 FS $3; print $1 FS $4}' $fichier_resultats | sort -t';' -k2,2 > $fichier_resultats2
 awk -F';' '{print $2 FS $3}' $fichier_resultats > $fichier_resultats4 #| sort -t';' -k2,2
 #sed -i 's/$/;/g' $fichier_resultats2

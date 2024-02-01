@@ -519,8 +519,11 @@ void VilleExiste(VilleAVL *racine, char ville[]) {
     if (racine == NULL) {
         return; // La ville n'existe pas dans l'AVL
     }
+    printf("ville : %s , racine ville : %s\n",ville,racine->ville);
     if (strcmp(ville, racine->ville) == 0) {
+        printf("ajout\n");
             racine->nb_passage_ville_depart ++;
+            printf("%d\n",racine->nb_passage_ville_depart);
         return; // Le conducteur existe dans l'AVL
     //Vérifie dans le noeud gauche si nom de ville avant dans l'alphabet par rapport au nom de ville de la racine, à droite sinon
     } else if (strcmp(ville, racine->ville) < 0) {
@@ -533,7 +536,7 @@ void VilleExiste(VilleAVL *racine, char ville[]) {
 void traiter(VilleAVL * root){
     if (root != NULL){
         traiter(root->gauche);
-        printf("%s\n",root->ville);
+        printf("%s %d\n",root->ville, root->nb_passage_ville_depart);
         traiter(root->droite);
     }
 }
@@ -584,6 +587,7 @@ int main(){
             VilleExiste(Ville_trie,ville);
       }
     }
+    traiter(Ville_trie);
     pliste=NULL;
     processStats(arbre);
     fclose(fichier2);
