@@ -503,7 +503,7 @@ VilleAVL *trieVille(VilleAVL *root, VilleAVL *nvRoot) {
 }
 
 
-//Fonction vérifiant si le nom de la ville est déja dans l'AVL 
+//Fonction vérifiant si le nom de la ville est déja dans l'AVL, et augmente le nombre de fois ou la ville est une ville de départ de trajet si la ville existe déjà
 void VilleExiste(VilleAVL *racine, char ville[]) {
     if (racine == NULL) {
         return; // La ville n'existe pas dans l'AVL
@@ -558,14 +558,16 @@ int main(){
         return 1;
     }
     int step_ID;
+    //Récupère les données du texte resultat_T4.txt dont l'ID Trajet et la ville de départ du trajet. Utilise la fonction VilleExiste pour implémenter les départs associés aux ID Trajets dans l'AVL trié alphabétiquement.
     while (fscanf(fichier2, "%d;%49[^\n]\n", &step_ID, ville) == 2 ){
         if (step_ID == 1){
             VilleExiste(Ville_trie,ville);
       }
     }
-    //pliste=NULL;
+    //Appel processStats pour ecrire les données de l'AVL Ville_trie dans le texte de sortie
     processStats(Ville_trie);
     fclose(fichier2);
+    //Libère la mémoire de pliste
     while (pliste != NULL) {
         Trajet *temp = pliste;
         pliste = pliste->next;
